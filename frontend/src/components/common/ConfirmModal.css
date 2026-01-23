@@ -1,0 +1,95 @@
+/* ===== Overlay ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* ===== Modal ===== */
+.modal {
+  width: 380px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: scaleIn 0.2s ease;
+}
+
+/* ===== Header ===== */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.modal-icon {
+  font-size: 24px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ===== Message ===== */
+.modal-message {
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* ===== Actions ===== */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn.cancel {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.btn.cancel:hover {
+  background: #d1d5db;
+}
+
+.btn.delete {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.btn.delete:hover {
+  background: #b91c1c;
+}
+
+/* ===== Animation ===== */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

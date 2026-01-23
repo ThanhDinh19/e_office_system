@@ -1,0 +1,66 @@
+/* ===== GENERAL INFO CARD ===== */
+.general-info-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 5px;
+}
+
+.general-info-card h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* ===== INFO ROW ===== */
+.general-info-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px dashed #cbd1dd;
+}
+
+.general-info-row:last-child {
+  border-bottom: none;
+}
+
+.general-info-label {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ===== INPUT COMMON ===== */
+.general-info-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.general-info-input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* ===== ERROR ===== */
+.general-info-error {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+/* ===== PHONE INPUT OVERRIDE ===== */
+.general-info-phone :global(.form-control) {
+  width: 100% !important;
+  height: 38px !important;
+  border-radius: 4px !important;
+}
+
+/* ===== SAVE BAR ===== */
+.general-info-save {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}

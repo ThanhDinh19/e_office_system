@@ -1,0 +1,37 @@
+.sidebar {
+  width: 220px;
+  background: #1f2937;
+  color: #fff;
+  padding: 16px;
+}
+
+.sidebar-title {
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 700;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+}
+
+.menu-item {
+  display: block;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  color: #d1d5db;
+  text-decoration: none;
+}
+
+.menu-item:hover {
+  background: #374151;
+  color: #fff;
+}
+
+.menu-item.active {
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}

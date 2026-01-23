@@ -1,0 +1,74 @@
+/* ===== Navbar ===== */
+.navbar {
+  height: 56px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0 24px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* ===== User ===== */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* ===== Dropdown ===== */
+.dropdown {
+  position: absolute;
+  top: 56px;
+  right: 0;
+  width: 180px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.dropdown-item {
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: #f3f4f6;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.dropdown-item.logout {
+  color: #dc2626;
+  font-weight: 600;
+}

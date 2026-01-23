@@ -1,0 +1,29 @@
+.login-layout {
+  min-height: 100vh;
+  position: relative;
+  background: #fff;
+}
+
+/* Nội dung chính */
+.login-content {
+  min-height: 100vh;
+}
+
+/* Footer cố định dưới */
+.login-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 12px;
+  color: #6b7280;
+  background: rgba(255, 255, 255, 0.9);
+  border-top: 1px solid #e5e7eb;
+  z-index: 100;
+}
