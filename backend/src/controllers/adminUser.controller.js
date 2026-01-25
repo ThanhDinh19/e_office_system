@@ -1,9 +1,10 @@
 
 const bcrypt = require('bcryptjs');
-const { User, Role, Employee, Position, Department } = require('../models');
+const { User, Role, Employee, Position, Department, EmployeeContract, SocialLink, CompanyInfo } = require('../models');
 const exportContract = require('../services/exportContract');
 
-exports.getUsers = async (req, res) => {
+// có dùng
+exports.getUsers = async (req, res) => {  
   try {
     const users = await User.findAll({
       attributes: ['id', 'username', 'email', 'is_login_disabled', 'is_inactive'],
@@ -20,11 +21,11 @@ exports.getUsers = async (req, res) => {
             {
               model: Position,
               attributes: ['name'], // tên chức vụ
-            },
+            },  
           ],
         },
       ],
-    });
+    })
 
     res.json(users);
   } catch (err) {
@@ -32,6 +33,56 @@ exports.getUsers = async (req, res) => {
     res.status(500).json({ message: 'Failed to load users' });
   }
 };
+
+// có dùng
+// controllers/user.controller.js
+exports.deactivateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId; // tài khoản của chính mình
+
+    // Không cho tự xóa chính mình
+    if (String(id) === String(userId)) {
+      return res.status(403).json({
+        message: 'You cannot deactivate your own account',
+      });
+    }
+
+    // 1️ Lấy user
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // 2️ Deactivate user
+    await user.update({
+      is_inactive: true,
+      is_login_disabled: true,
+    });
+
+    // 3️ Nếu user không gắn employee (admin)
+    if (!user.employee_id) {
+      return res.json({ message: 'User deactivated successfully (no employee)' });
+    }
+
+    // 4️ Lấy employee bằng employee_id
+    const employee = await Employee.findByPk(user.employee_id);
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    // 5️ Update employee status
+    await employee.update({
+      status: 'resigned',
+    });
+
+    res.json({ message: 'User deactivated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to deactivate user' });
+  }
+};
+
 
 
 
@@ -101,7 +152,7 @@ exports.deleteUser = async (req, res) => {
     }
 
     // Soft delete (khuyến nghị)
-    user.status = 'deleted'; // hoặc 'locked'
+    user.status = 'deleted'; // hoặc 'locked' 
     await user.save();
 
     return res.json({
@@ -128,10 +179,105 @@ exports.resetPassword = async (req, res) => {
 };
 
 
+
+// có dùng
 exports.exportContract = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user.userId; // lấy từ token
 
+    // Lấy user trước, tim user của người xuất đơn để lấy được employee_id, khi có employee_id và tìm employee tức employee của người xuất đơn
+    const user = await User.findByPk(userId, {
+      attributes: [
+        'id',
+        'username',
+        'email',
+        'employee_id',
+        'is_login_disabled',
+        'is_inactive',
+      ],
+      include: [
+        {
+          model: Role,
+          attributes: ['id', 'name'],
+          through: { attributes: [] },
+        },
+      ],
+    });
+
+    // Nếu user KHÔNG gắn employee (admin)
+    if (!user.employee_id) {
+      return res.json({
+        user,
+        employee: null,
+      });
+    }
+
+    // lấy thông tin của company
+    const companyInfo = await CompanyInfo.findOne({
+      attributes: [
+        'company_name',
+        'address',
+        'phone',
+        'tax_code',
+        'bank_account',
+        'representative_name',
+        'representative_title',
+      ],
+    });
+
+
+    // employee của người xuất đơn
+    const authorizedPerson = await Employee.findByPk(user.employee_id, {
+      include: [
+        {
+          model: Department,
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Position,
+          attributes: ['id', 'name'],
+        },
+        {
+          model: EmployeeContract,
+          attributes: [
+            'id',
+            'employee_id',
+
+            'contract_type',
+            'contract_number',
+
+            'start_date',
+            'end_date',
+
+            'probation_from',
+            'probation_to',
+
+            'duration_months',
+
+            'workplace',
+            'department_name',
+            'job_title',
+            'job_description',
+
+            'salary',
+            'salary_grade',
+            'salary_level',
+
+            'contract_file',
+
+            'sign_date',
+            'status',
+          ],
+        },
+        {
+          model: SocialLink,
+          attributes: ['id', 'platform', 'url'],
+        },
+      ],
+    });
+
+    // employe của người được xuất đơn
     const employee = await Employee.findByPk(id, {
       include: [
         {
@@ -141,7 +287,7 @@ exports.exportContract = async (req, res) => {
             {
               model: Role,
               attributes: ['id', 'name'],
-              through: { attributes: [] }, // bỏ user_roles
+              through: { attributes: [] }, // bỏ user_roles vào
             },
           ],
         },
@@ -152,7 +298,39 @@ exports.exportContract = async (req, res) => {
         {
           model: Position,
           attributes: ['id', 'name'],
+        },
+        {
+          model: EmployeeContract,
+          attributes: [
+            'id',
+            'employee_id',
 
+            'contract_type',
+            'contract_number',
+
+            'start_date',
+            'end_date',
+
+            'probation_from',
+            'probation_to',
+
+            'duration_months',
+
+            'workplace',
+            'department_name',
+            'job_title',
+            'job_description',
+
+            'salary',
+            'contract_file',
+
+            'sign_date',
+            'status',
+          ],
+        },
+        {
+          model: SocialLink,
+          attributes: ['id', 'platform', 'url'],
         }
       ],
     });
@@ -161,7 +339,7 @@ exports.exportContract = async (req, res) => {
       return res.status(404).json({ message: 'Employee not found' });
     }
 
-    const fileBuffer = await exportContract(employee);
+    const fileBuffer = await exportContract(employee, authorizedPerson, companyInfo);
     res.setHeader('Content-Disposition', 'attachment; filename=contract.docx');
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
     res.send(fileBuffer);

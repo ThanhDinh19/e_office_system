@@ -162,3 +162,9 @@
   justify-content: center;
   font-weight: 600;
 }
+
+
+.self-user {
+  color: #9ca3af;
+  cursor: not-allowed;
+}

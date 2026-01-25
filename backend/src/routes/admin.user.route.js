@@ -19,6 +19,13 @@ router.post(
 );
 
 router.put(
+  '/users/:id/deactivate',
+  authenticate,
+  authorize('ADMIN', 'HR'),
+  adminUserController.deactivateUser
+);
+
+router.put(
   '/users/:id',
   authenticate,
   authorize('ADMIN'),

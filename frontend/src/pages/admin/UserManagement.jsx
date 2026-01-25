@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
-import { getUsers } from '../../services/adminUser.service';
+import { getUsers, deactivateUser } from '../../services/adminUser.service';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import './UserManagement.css';
 import AddEmployeeWizard from '../employees/AddEmployeeWizard';
@@ -14,6 +14,9 @@ export default function UserManagement() {
     const [is_inactiveTab, setInActiveTab] = useState(false);
     const [openWizard, setOpenWizard] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    const currentUserId = currentUser?.id;
 
     const fetchUsers = async () => {
         const data = await getUsers();
@@ -173,16 +176,21 @@ export default function UserManagement() {
                                 <td>{user.Employee?.phone}</td>
 
                                 <td>
-                                    <button
-                                        className="delete-icon"
-                                        onClick={() => {
-                                            setSelectedUser(user);
-                                            setShowModal(true);
-                                        }}
-                                    >
-                                        ×
-                                    </button>
+                                    {user.id !== currentUserId ? (
+                                        <button
+                                            className="delete-icon"
+                                            onClick={() => {
+                                                setSelectedUser(user);
+                                                setShowModal(true);
+                                            }}
+                                        >
+                                            ×
+                                        </button>
+                                    ) : (
+                                        <span className="self-user">🔒</span>
+                                    )}
                                 </td>
+
                             </tr>
                         ))}
                     </tbody>
@@ -194,9 +202,26 @@ export default function UserManagement() {
                 open={showModal}
                 title="Remove member"
                 message={`Are you sure you want to remove "${selectedUser?.Employee?.full_name}"?`}
-                onCancel={() => setShowModal(false)}
-                onConfirm={() => setShowModal(false)}
+                onCancel={() => {
+                    setShowModal(false);
+                    setSelectedUser(null);
+                }}
+                onConfirm={async () => {
+                    try {
+                        await deactivateUser(selectedUser?.id);
+
+                        setShowModal(false);
+                        setSelectedUser(null);
+
+                        await fetchUsers(); // reload danh sách
+
+                    } catch (err) {
+                        console.error(err);
+                        alert('Remove user failed');
+                    }
+                }}
             />
+
 
             {/* AddEmployee Modal */}
             <AddEmployeeWizard

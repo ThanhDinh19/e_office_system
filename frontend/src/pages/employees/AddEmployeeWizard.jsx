@@ -8,7 +8,7 @@ import { useNotification } from '../../context/NotificationContext';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { getUsers } from "../../services/adminUser.service";
-
+import { AddressPicker } from '../../components/widgets/AddressPicker';
 
 
 export default function AddEmployeeWizard({ open, onClose, onSuccess }) {
@@ -27,7 +27,7 @@ export default function AddEmployeeWizard({ open, onClose, onSuccess }) {
     position_id: '',
     jobTitle: '',
     salary: '',
-    salaryTerm: '',
+    contract_type: '',
     hireDate: '',
     endDate: '',
     username: '',
@@ -113,6 +113,7 @@ export default function AddEmployeeWizard({ open, onClose, onSuccess }) {
       if (!formData.department_id.trim()) newErrors.department_id = 'Required';
       if (!formData.jobTitle.trim()) newErrors.jobTitle = 'Required';
       if (!formData.salary.trim()) newErrors.salary = 'Required';
+      if (!formData.contract_type.trim()) newErrors.contract_type = 'Required';
       if (!formData.hireDate) newErrors.hireDate = 'Required';
 
       if (formData.endDate && formData.hireDate) {
@@ -166,7 +167,7 @@ export default function AddEmployeeWizard({ open, onClose, onSuccess }) {
       department_id: '',
       jobTitle: '',
       salary: '',
-      salaryTerm: '',
+      contract_type: '',
       hireDate: '',
       endDate: '',
       username: '',
@@ -196,7 +197,7 @@ export default function AddEmployeeWizard({ open, onClose, onSuccess }) {
         endDate: formData.endDate,
 
         salary: formData.salary,
-        salaryTerm: formData.salaryTerm,
+        contract_type: formData.contract_type,
 
         username: formData.username,
         email: formData.email,
@@ -288,6 +289,7 @@ const GeneralInfo = ({ data, update, errors }) => (
     />
 
     <Field
+      type='number'
       label="Citizen identification number"
       value={data.cccd}
       onChange={v => update('cccd', v)}
@@ -296,7 +298,7 @@ const GeneralInfo = ({ data, update, errors }) => (
 
     <Field
       label="Mailing address"
-      textarea
+      address
       value={data.address}
       onChange={v => update('address', v)}
     />
@@ -388,6 +390,40 @@ const SelectPosition = ({ label, value, onChange, options, error }) => {
   );
 };
 
+const SelectContractType = ({ label, value, onChange, options, error }) => {
+  return (
+    <div className="form-field">
+      <label>
+        {label}
+        <span className="required">*</span>
+      </label>
+
+      <select
+        value={value || ''}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        <option value="">-- Contract type --</option>
+
+        {options.map((item) => (
+          <option key={item.value} value={item.value}>
+            {item.label}
+          </option>
+        ))}
+      </select>
+
+      {error && <span className="error-text">{error}</span>}
+    </div>
+  );
+};
+
+
+const CONTRACT_TYPE_OPTIONS = [
+  { label: 'Probation', value: 'PROBATION' },
+  { label: 'Fixed-term', value: 'FIXED_TERM' },
+  { label: 'Indefinite', value: 'INDEFINITE' },
+];
+
+
 /* ===== Step 2 ===== */
 const JobInfo = ({ data, update, errors, departments, positions }) => (
   <>
@@ -422,10 +458,18 @@ const JobInfo = ({ data, update, errors, departments, positions }) => (
       error={errors.salary}
     />
 
-    <Field
+    {/* <Field
       label="Salary term"
       value={data.salaryTerm}
       onChange={v => update('salaryTerm', v)}
+    /> */}
+
+    <SelectContractType
+      label="Contract"
+      value={data.contract_type}
+      onChange={(v) => update('contract_type', v)}
+      options={CONTRACT_TYPE_OPTIONS}
+      error={errors.contract_type}
     />
 
     <Field
@@ -530,21 +574,34 @@ const AccountSettings = ({ data, update, errors, roles }) => (
   </>
 );
 
-
-
-
 /* ================= FORM ATOMS ================= */
 
-const Field = ({ label, type = 'text', textarea, value, onChange, error, ...props }) => (
-  <div className="form-field">
+const Field = ({
+  label,
+  type = 'text',
+  textarea,
+  address,
+  value,
+  onChange,
+  error,
+  ...props
+}) => (
+  <div className={`form-field ${address ? 'address-field' : ''}`}>
     <label>
       {label}
       {(label === 'Full name' || label === 'Phone' ||
-        label === 'Gender' || label === 'Job Title' || label === 'Salary' ||
-        label === 'Date of hire' || label === 'Email' || label === 'Password') && <span className="required">*</span>}
+        label === 'Gender' || label === 'Job Title' ||
+        label === 'Salary' || label === 'Date of hire' ||
+        label === 'Email' || label === 'Password') && (
+          <span className="required">*</span>
+        )}
     </label>
 
-    {textarea ? (
+    {address ? (
+      <div className="address-wrapper">
+        <AddressPicker value={value} onChange={onChange} />
+      </div>
+    ) : textarea ? (
       <textarea
         value={value}
         onChange={e => onChange(e.target.value)}
@@ -563,6 +620,7 @@ const Field = ({ label, type = 'text', textarea, value, onChange, error, ...prop
     {error && <span className="error-text">{error}</span>}
   </div>
 );
+
 
 const RadioGroup = ({ label, options, value, onChange, error }) => (
   <div className="form-field">

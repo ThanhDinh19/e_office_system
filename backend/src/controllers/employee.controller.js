@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const { mapEmployeeData, mapContractData, mapUserData } = require('../mappers/employee.mapper');
 const { mapSocialLinkData } = require('../mappers/social_link.mapper');
 const { generateEmployeeCode } = require('../utils/employeeCode.util'); // tạo employee_code
+const { Op } = require('sequelize');
+const { mapEmployeeInfoData, mapEmployeeContract, mapEmployeeContractData } = require('../mappers/contract.mapper');
 /**
  * GET /api/employees
  */
@@ -14,6 +16,105 @@ const getAllEmployees = async (req, res, next) => {
     next(error); // đẩy lỗi về global error handler
   }
 };
+
+// // controllers/employee.controller.js
+/**
+ * GET /api/employees/me
+ */
+const getMyInfo = async (req, res, next) => {
+  try {
+    const userId = req.user.userId; // lấy từ token
+
+    // 1. Lấy user trước
+    const user = await User.findByPk(userId, {
+      attributes: [
+        'id',
+        'username',
+        'email',
+        'employee_id',
+        'is_login_disabled',
+        'is_inactive',
+      ],
+      include: [
+        {
+          model: Role,
+          attributes: ['id', 'name'],
+          through: { attributes: [] },
+        },
+      ],
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // 2. Nếu user KHÔNG gắn employee (admin)
+    if (!user.employee_id) {
+      return res.json({
+        user,
+        employee: null,
+      });
+    }
+
+    // 3. Lấy employee theo employee_id
+    const employee = await Employee.findByPk(user.employee_id, {
+      include: [
+        {
+          model: Department,
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Position,
+          attributes: ['id', 'name'],
+        },
+        {
+          model: EmployeeContract,
+          attributes: [
+            'id',
+            'employee_id',
+
+            'contract_type',
+            'contract_number',
+
+            'start_date',
+            'end_date',
+
+            'probation_from',
+            'probation_to',
+
+            'duration_months',
+
+            'workplace',
+            'department_name',
+            'job_title',
+            'job_description',
+
+            'salary',
+            'salary_grade',
+            'salary_level',
+
+            'contract_file',
+
+            'sign_date',
+            'status',
+          ],
+        },
+        {
+          model: SocialLink,
+          attributes: ['id', 'platform', 'url'],
+        },
+      ],
+    });
+
+    return res.json({
+      user,
+      employee,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 /**
  * GET /api/employees/:id
@@ -42,6 +143,38 @@ const getEmployeeById = async (req, res, next) => {
         {
           model: Position,
           attributes: ['id', 'name'],
+        },
+        {
+          model: EmployeeContract,
+          attributes: [
+            'id',
+            'employee_id',
+
+            'contract_type',
+            'contract_number',
+
+            'start_date',
+            'end_date',
+
+            'probation_from',
+            'probation_to',
+
+            'duration_months',
+
+            'workplace',
+            'department_name',
+            'job_title',
+            'job_description',
+
+            'salary',
+            'salary_grade',
+            'salary_level',
+
+            'contract_file',
+
+            'sign_date',
+            'status',
+          ],
         },
         {
           model: SocialLink,
@@ -212,7 +345,6 @@ const updateAccount = async (req, res) => {
   }
 }
 
-
 const updateEmployee = async (req, res) => {
   try {
     const { id } = req.params;
@@ -279,11 +411,9 @@ const updateEmployee = async (req, res) => {
   }
 };
 
-
-
 const updateSocialLinks = async (req, res) => {
-  const { employeeId } = req.params;
-  const socialLinks = req.body; // ARRAY
+  const { id } = req.params;
+  const socialLinks = req.body;
 
   if (!Array.isArray(socialLinks)) {
     return res.status(400).json({ message: 'Invalid social links data' });
@@ -292,59 +422,36 @@ const updateSocialLinks = async (req, res) => {
   const t = await sequelize.transaction();
 
   try {
-    // 1️ Lấy các link hiện có trong DB
-    const existingLinks = await SocialLink.findAll({
-      where: { employee_id: employeeId },
-      transaction: t,
-    });
+    // 1️ Chuẩn hoá dữ liệu từ FE
+    const normalizedLinks = socialLinks
+      .filter(l => l.url && l.platform)
+      .map(l => ({
+        employee_id: id,
+        platform: l.platform.toLowerCase().trim(),
+        url: l.url.trim(),
+      }));
 
-    const existingMap = new Map(
-      existingLinks.map(l => [l.id, l])
-    );
+    const incomingPlatforms = normalizedLinks.map(l => l.platform);
 
-    const incomingIds = [];
-
-    // 2️ Update hoặc Create
-    for (const link of socialLinks) {
-      if (!link.url) continue; // bỏ link rỗng
-
-      if (link.id && existingMap.has(link.id)) {
-        // UPDATE
-        await SocialLink.update(
-          {
-            platform: link.platform,
-            url: link.url,
-          },
-          {
-            where: { id: link.id },
-            transaction: t,
-          }
-        );
-
-        incomingIds.push(link.id);
-      } else {
-        // CREATE
-        const created = await SocialLink.create(
-          {
-            employee_id: employeeId,
-            platform: link.platform,
-            url: link.url,
-          },
-          { transaction: t }
-        );
-
-        incomingIds.push(created.id);
-      }
+    // 2️ Upsert từng social link
+    for (const link of normalizedLinks) {
+      await SocialLink.upsert(
+        {
+          employee_id: link.employee_id,
+          platform: link.platform,
+          url: link.url,
+        },
+        { transaction: t }
+      );
     }
 
-    // 3️. xóa các link bị remove khỏi UI
-    const toDelete = existingLinks
-      .filter(l => !incomingIds.includes(l.id))
-      .map(l => l.id);
-
-    if (toDelete.length > 0) {
+    // 3️ Xoá các social link không còn tồn tại trên FE
+    if (incomingPlatforms.length > 0) {
       await SocialLink.destroy({
-        where: { id: toDelete },
+        where: {
+          employee_id: id,
+          platform: { [Op.notIn]: incomingPlatforms },
+        },
         transaction: t,
       });
     }
@@ -354,13 +461,10 @@ const updateSocialLinks = async (req, res) => {
 
   } catch (err) {
     await t.rollback();
-    console.error(err);
+    console.error('updateSocialLinks error:', err);
     res.status(500).json({ message: 'Failed to update social links' });
   }
 };
-
-module.exports = { updateSocialLinks };
-
 
 
 const uploadAvatar = async (req, res) => {
@@ -402,6 +506,115 @@ const getSocialLinks = async (req, res) => {
 };
 
 
+const updateEmployeeContract = async (req, res) => {
+  const t = await sequelize.transaction();
+
+  try {
+    const { id } = req.params; // employee_id
+
+    
+    const employeeData = mapEmployeeInfoData(req.body);
+    const employee = await Employee.findByPk(id, { transaction: t });
+
+    if (!employee) {
+      await t.rollback();
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    await employee.update(employeeData, { transaction: t });
+
+   
+    const contractData = mapEmployeeContractData(req.body, id);
+  
+    const contract = await EmployeeContract.findOne({
+      where: { employee_id: id },
+      order: [['created_at', 'DESC']], // nếu có nhiều hợp đồng
+      transaction: t,
+    });
+
+    if (!contract) {
+      await t.rollback();
+      return res.status(404).json({ message: 'Employee contract not found' });
+    }
+
+    await contract.update(contractData, { transaction: t });
+
+    /* ================= COMMIT ================= */
+    await t.commit();
+
+    res.json({
+      message: 'Employee & contract updated successfully',
+    });
+  } catch (err) {
+    await t.rollback();
+    console.error(err);
+    res.status(500).json({
+      message: 'Failed to update employee & contract',
+    });
+  }
+};
+
+
+/* ================= EMPLOYEE ================= */
+    // const employeeData = {
+    //   full_name: req.body.full_name,
+    //   cccd: req.body.cccd,
+    //   cccd_issue_date: req.body.cccd_issue_date || null,
+    //   cccd_issue_place: req.body.cccd_issue_place || null,
+
+    //   labor_book_number: req.body.labor_book_number || null,
+    //   labor_book_issue_date: req.body.labor_book_issue_date || null,
+    //   labor_book_issue_place: req.body.labor_book_issue_place || null,
+
+    //   profession: req.body.profession || null,
+
+    //   email: req.body.email,
+    //   phone: req.body.phone,
+    //   address: req.body.address,
+    //   permanent_address: req.body.permanent_address,
+
+    //   place_of_birth: req.body.place_of_birth,
+    //   nationality: req.body.nationality,
+
+    //   dob: req.body.dob || null,
+    //   gender: req.body.gender,
+
+    //   department_id: req.body.department_id || null,
+    //   position_id: req.body.position_id || null,
+
+    //   contract_type: req.body.contract_type,
+    //   job_title: req.body.job_title,
+    //   join_date: req.body.join_date || null,
+    // };
+
+
+     /* ================= CONTRACT ================= */
+    // const contractData = {
+    //   start_date: req.body.hireDate,
+    //   end_date: req.body.endDate || null,
+
+    //   contract_type: req.body.contract_type,
+    //   contract_number: req.body.contract_number || null,
+
+    //   probation_from: req.body.probation_from || null,
+    //   probation_to: req.body.probation_to || null,
+
+    //   duration_months: req.body.duration_months || null,
+
+    //   workplace: req.body.workplace || null,
+    //   job_title: req.body.job_title || null,
+    //   job_description: req.body.job_description || null,
+
+    //   salary: req.body.salary,
+    //   salary_grade: req.body.salary_grade || null,
+    //   salary_level: req.body.salary_level || null,
+
+    //   sign_date: req.body.sign_date || null,
+    //   status: req.body.contract_status || 'DRAFT',
+    // };
+
+
+
 module.exports = {
   getAllEmployees,
   getEmployeeById,
@@ -411,4 +624,7 @@ module.exports = {
   updateJobInfo,
   updateAccount,
   getSocialLinks,
+  updateSocialLinks,
+  getMyInfo,
+  updateEmployeeContract,
 };

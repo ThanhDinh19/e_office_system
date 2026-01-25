@@ -27,6 +27,7 @@ const Asset = require('./asset.model');
 const AssetAssignment = require('./asset-assignment.model');
 const AssetMaintenance = require('./asset-maintenance.model');
 const SocialLink = require('./social-link.model');
+const CompanyInfo = require('./companyInfo.model')
 /* ========== Associations ========== */
 
 // Employee - User (1 - 1)
@@ -203,4 +204,5 @@ module.exports = {
   AssetAssignment,
   AssetMaintenance,
   SocialLink,
+  CompanyInfo,
 };

@@ -26,7 +26,11 @@ export default function Login() {
       login(data);
       navigate('/dashboard');
     } catch (err) {
-      setError('Sai tài khoản hoặc mật khẩu');
+      const message =
+        err.response?.data?.message ||
+        'Login failed. Please try again.';
+
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -36,7 +40,7 @@ export default function Login() {
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2 className="login-title">E-OFFICE</h2>
-        <p className="login-subtitle">Đăng nhập hệ thống</p>
+        <p className="login-subtitle">Sign in to the system</p>
 
         {error && <div className="login-error">{error}</div>}
 
@@ -44,7 +48,7 @@ export default function Login() {
           <label>Username</label>
           <input
             type="text"
-            placeholder="Nhập username"
+            placeholder="Enter username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -55,7 +59,7 @@ export default function Login() {
           <label>Password</label>
           <input
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -63,17 +67,17 @@ export default function Login() {
         </div>
 
         <button className="login-button" disabled={loading}>
-          {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+          {loading ? 'Signing in...' : 'Sign In'}
         </button>
 
         <div className="login-links">
-          <Link to="/forget-password" >Quên mật khẩu?</Link>
-          <Link to="/register">Đăng ký tài khoản</Link>
+          <Link to="/forget-password">Forgot password?</Link>
+          <Link to="/register">Register account</Link>
         </div>
       </form>
 
       <div className="demo-account-container">
-        <p className="demo-title">Đăng nhập với tư cách</p>
+        <p className="demo-title">Login as demo account</p>
 
         <div
           className="demo-item admin"
@@ -119,7 +123,6 @@ export default function Login() {
           <span className="credential">manager01 / manager123</span>
         </div>
       </div>
-
     </div>
   );
 }

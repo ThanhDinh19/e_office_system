@@ -40,6 +40,11 @@ export const getSocialLinks = async (id) => {
 }
 
 export const updateSocialLinks = async (id, data) => {
-  const res = await axios.put(`/employees/${id}/social-links/`, data)
+  const res = await axios.put(`/employees/${id}/social-links`, data)
+  return res.data;
+}
+
+export const updateContract = async (id, data) => {
+  const res = await axios.put(`/employees/${id}/contract`, data)
   return res.data;
 }

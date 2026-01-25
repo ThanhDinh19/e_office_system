@@ -2,11 +2,12 @@
 .wizard-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   justify-content: center;
-  align-items: flex-start;     /* QUAN TRỌNG */
-  padding-top: 60px;  
+  align-items: flex-start;
+  /* QUAN TRỌNG */
+  padding-top: 60px;
   z-index: 2000;
 }
 
@@ -15,8 +16,10 @@
   width: 580px;
   background: #fff;
   border-radius: 12px;
-  padding: 20px 24px;
+  padding: 4px 24px;
   transform-origin: top;
+  position: relative;
+  bottom: 50px;
 }
 
 /* ===== Header ===== */
@@ -101,7 +104,7 @@
 .form-field select:focus {
   outline: none;
   border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37,99,235,0.1);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
 .form-field.has-error input,
@@ -175,6 +178,7 @@
     opacity: 0;
     transform: translateX(24px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -230,8 +234,32 @@
     opacity: 0;
     transform: translateX(-50%) translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+}
+
+
+/* chỉ áp dụng cho field address */
+.address-field {
+  width: 100%;
+}
+
+/* tách AddressPicker khỏi form-field flex */
+.address-wrapper {
+  width: 100%;
+}
+
+/* đảm bảo grid bên trong bung ngang */
+.address-wrapper .address-picker {
+  max-width: 100%;
+}
+
+/* đảm bảo grid không bị bó */
+.address-wrapper .grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
 }

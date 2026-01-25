@@ -48,6 +48,15 @@ const SocialLink = sequelize.define(
     tableName: 'social_links',
     timestamps: false,
     underscored: true,
+
+    // BẮT BUỘC để upsert hoạt động đúng
+    indexes: [
+      {
+        unique: true,
+        fields: ['employee_id', 'platform'],
+        name: 'uniq_employee_platform',
+      },
+    ],
   }
 );
 

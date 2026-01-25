@@ -6,8 +6,13 @@
   border-bottom: 1px dashed #e5e7eb;
 }
 
+/* .info-row .info-value option{
+  color: gray
+} */
+
 .info-row input,
-.info-row select {
+.info-row select,
+.info-row textarea {
   width: 100%;
   padding: 6px 8px;
   border: 1px solid transparent;
@@ -16,7 +21,8 @@
 }
 
 .info-row input:focus,
-.info-row select:focus {
+.info-row select:focus,
+.info-row textarea:focus {
   outline: none;
   border-color: transparent;
   background-color: #f3f4f6;
@@ -30,7 +36,8 @@
 }
 
 .info-row input.has-error:focus,
-.info-row select.has-error:focus {
+.info-row select.has-error:focus,
+.info-row textarea.has-error:focus {
   border-color: transparent;
   background-color: #f3f4f6;
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
@@ -85,4 +92,24 @@
 .checkbox-label input {
   width: 16px;
   height: 16px;
+}
+
+
+
+/* text area */
+
+.info-value textarea {
+  width: 98%;
+  min-height: 65px;
+  padding: 0px 10px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+  border: none;
+}
+
+.info-value textarea:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
 }

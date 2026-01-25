@@ -23,18 +23,23 @@ export default function Sidebar() {
       <h3 className="sidebar-title">E-OFFICE</h3>
 
       <ul className="menu">
-        {menus.map((item) => (
-          <li key={item.path}>
-            <NavLink
-              to={item.path}
-              className={({ isActive }) =>
-                isActive ? 'menu-item active' : 'menu-item'
-              }
-            >
-              {item.label}
-            </NavLink>
-          </li>
-        ))}
+        {menus.map(item => {
+          const Icon = item.icon; // lấy icon từ config
+
+          return (
+            <li key={item.path}>
+              <NavLink
+                to={item.path}
+                className={({ isActive }) =>
+                  isActive ? 'menu-item active' : 'menu-item'
+                }
+              >
+                {Icon && <Icon size={18} />}   {/* render icon */}
+                <span>{item.label}</span>
+              </NavLink>
+            </li>
+          );
+        })}
       </ul>
     </aside>
   );

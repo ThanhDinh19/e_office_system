@@ -1,4 +1,6 @@
 import './EditableRow.css';
+import { AddressPicker } from '../widgets/AddressPicker';
+
 const EditableRow = ({
   label,
   value,
@@ -7,65 +9,109 @@ const EditableRow = ({
   disabled = false,
   options = [],
   error = '',
-  placeholder='',
+  placeholder = '',
 }) => (
   <div className="info-row">
     <div className="info-label">{label}</div>
+
     <div className="info-value">
-      {type === 'select' ? (
+      {/* ADDRESS */}
+      {type === 'address' && (
+        <AddressPicker
+          value={value}
+          onChange={onChange}
+        />
+      )}
+
+      {/* SELECT */}
+      {type === 'select' && (
         <select
           value={value || ''}
-          onChange={e => onChange(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
           className={error ? 'has-error' : ''}
         >
           <option value="">Select</option>
           {options.map((o, idx) => (
-            <option key={o?.id || idx} value={o?.id || o}>
+            <option
+              key={o?.id || idx}
+              value={o?.id || o}
+            >
               {o?.name || o}
             </option>
           ))}
         </select>
-      ) : type === 'radio' ? (
+      )}
+
+      {/* TEXTAREA */}
+      {type === 'textarea' && (
+        <textarea
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+          className={error ? 'has-error' : ''}
+          placeholder={placeholder}
+          rows={4}
+        />
+      )}
+
+      {/* RADIO */}
+      {type === 'radio' && (
         <div className="radio-group">
           {options.map((o, idx) => (
-            <label key={o?.id || idx} className="radio-label">
+            <label key={idx} className="radio-label">
               <input
                 type="radio"
-                name={label}
-                value={o?.id || o}
-                checked={value === (o?.id || o)}
-                onChange={e => onChange(e.target.value)}
-                disabled={disabled}
+                value={o}
+                checked={value === o}
+                onChange={(e) => onChange(e.target.value)}
               />
-              <span>{o?.name || o}</span>
+              <span>{o}</span>
             </label>
           ))}
-          {error && <span className="error-text">{error}</span>}
         </div>
-      ) : type === 'checkbox' ? (
+      )}
+
+      {/* CHECKBOX */}
+      {type === 'checkbox' && (
         <label className="checkbox-label">
           <input
             type="checkbox"
             checked={!!value}
-            onChange={e => onChange(e.target.checked)}
+            onChange={(e) => onChange(e.target.checked)}
             disabled={disabled}
           />
-          <span>{value && label === "Disable login" ? value : ""}</span>
-          <span>{value && label === "Disable login" ? "⚠️ The user will not be able to login in this system!" : value && label === "Mark as inactive" ? "⚠️ The inactive users will not be able to login in this system and not be counted in the active user list!" : ""}</span>
+
+          {value && label === 'Disable login' && (
+            <span>
+              ⚠️ The user will not be able to login in this system!
+            </span>
+          )}
+
+          {value && label === 'Mark as inactive' && (
+            <span>
+              ⚠️ The inactive users will not be able to login in this system
+              and not be counted in the active user list!
+            </span>
+          )}
+
           {error && <span className="error-text">{error}</span>}
         </label>
-      ) : (
+      )}
+
+      {/* DEFAULT INPUT */}
+      {!['address', 'select', 'textarea', 'radio', 'checkbox'].includes(type) && (
         <input
           type={type}
           value={value || ''}
-          onChange={e => onChange(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
           className={error ? 'has-error' : ''}
           placeholder={placeholder}
         />
       )}
-      {type !== 'radio' && error && <span className="error-text">{error}</span>}
+
+      {error && <span className="error-text">{error}</span>}
     </div>
   </div>
 );
@@ -73,9 +119,8 @@ const EditableRow = ({
 const EditablePhoneRow = ({ label, children }) => (
   <div className="info-row">
     <div className="info-label">{label}</div>
-    <div className="info-value">
-      {children}
-    </div>
+    <div className="info-value">{children}</div>
   </div>
 );
-export { EditablePhoneRow, EditableRow };
+
+export { EditableRow, EditablePhoneRow };

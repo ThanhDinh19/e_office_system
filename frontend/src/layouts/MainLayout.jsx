@@ -5,7 +5,8 @@ import './MainLayout.css';
 export default function MainLayout({ children }) {
   return (
     <div className="main-layout">
-      <Sidebar />
+       <Sidebar />
+      
 
       <div className="content-wrapper">
         <Navbar />

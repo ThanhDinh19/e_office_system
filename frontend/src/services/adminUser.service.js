@@ -5,8 +5,8 @@ export const getUsers = async () => {
   return res.data;
 };
 
-export const deleteUser = async () => {
-    const res = await axios.get('/admin/user/:id');
+export const deactivateUser = async (id) => {
+    const res = await axios.put(`/admin/users/${id}/deactivate`);
     return res.data;
 }
 

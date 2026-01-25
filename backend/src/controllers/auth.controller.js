@@ -37,10 +37,13 @@ const login = async (req, res, next) => {
     // lấy danh sách role
     const roles = user.Roles.map(r => r.name);
 
-    // kiểm ra is_login_enabled
-    // if(user.is_login_disabled){
-    //   return res.status(403).json({ message: 'Login is disabled for this account' });
-    // }
+    //kiểm ra is_login_enabled
+    if(user.is_login_disabled){
+      return res.status(403).json({ message: 'Login is disabled for this account' });
+    }
+    if(user.is_inactive){
+      return res.status(403).json({ message: 'This account has been temporarily disabled. Please contact the administrator' });
+    }
 
     // tạo JWT
     const token = jwt.sign(

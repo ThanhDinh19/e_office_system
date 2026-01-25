@@ -65,6 +65,11 @@ export default function AccountSetting() {
         }
 
         users.forEach(u => {
+            console.log(u.Employee?.id)
+
+            if(u.Employee?.id == id){
+                return;
+            }
             if(u.email === formData.email){ 
                 newErrors.email = 'Email already exists';
             }

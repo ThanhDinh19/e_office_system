@@ -6,6 +6,7 @@ import './EmployeeProfile.css';
 import JobInfo from './tabs/JobInfo';
 import AccountSetting from './tabs/AccountSetting';
 import SocialLink from './tabs/SocialLink';
+import Contract from './tabs/Contract';
 
 export default function EmployeeProfile() {
   const [activeTab, setActiveTab] = useState('general');
@@ -18,6 +19,7 @@ export default function EmployeeProfile() {
 
       <div className="profile-content">
         {activeTab === 'general' && <GeneralInfo />}
+        {activeTab === 'contract' && <Contract />}
         {activeTab === 'socical_links' && <SocialLink />}
         {activeTab === 'job' && <div><JobInfo /></div>}
         {activeTab === 'account' && <div><AccountSetting /></div>}

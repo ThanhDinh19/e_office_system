@@ -8,7 +8,7 @@ exports.mapEmployeeData = (body) => ({
   gender: body.gender,
   department_id: body.department_id,
   position_id: body.position_id,
-  contract_type: body.salaryTerm,
+  contract_type: body.contract_type,
   job_title: body.jobTitle,
   join_date: body.hireDate,
 });
@@ -17,8 +17,9 @@ exports.mapContractData = (body, employeeId) => ({
   employee_id: employeeId,
   start_date: body.hireDate,
   end_date: body.endDate || null,
+  job_title: body.jobTitle,
   salary: body.salary,
-  contract_type: body.salaryTerm,
+  contract_type: body.contract_type,
 });
 
 exports.mapUserData = (body, employeeId, passwordHash) => ({
@@ -31,4 +32,4 @@ exports.mapUserData = (body, employeeId, passwordHash) => ({
 exports.mapUserRole = (body, userId) => ({
   user_id: userId,
   role_id: body.role_id,
-})
+}) 

@@ -9,7 +9,6 @@ import './SocialLink.css';
 export default function SocialLink() {
     const { id } = useParams();
     const [socialLinks, setSocialLinks] = useState([]);
-
     const [errors, setErrors] = useState({});
     // const { showNotification } = useNotification();
 
@@ -19,22 +18,52 @@ export default function SocialLink() {
 
             const emp = await getEmployeeById(id);
 
+            const normalized = (emp.SocialLinks || []).map(l => ({
+                ...l,
+                platform: l.platform.toLowerCase(),
+            }));
 
-
-            setSocialLinks(emp.SocialLinks || []);
+            setSocialLinks(normalized);
         };
 
         fetchEmployeeSocialLink();
     }, [id]);
 
+    const isValidUrl = (url) => {
+        try {
+            new URL(url);
+            return true;
+        } catch {
+            return false;
+        }
+    };
+
     const handleSave = async () => {
+        const newErrors = {};
+
+        for (const l of socialLinks) {
+            if (l.url && !isValidUrl(l.url)) {
+                newErrors[l.platform] = 'Invalid URL';
+            }
+        }
+
+        // Nếu có lỗi → hiển thị & dừng submit
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
         try {
             await updateSocialLinks(id, socialLinks);
-            console.log(socialLinks);
+            console.log('Saved social links:', socialLinks);
+
+            setErrors({}); // clear lỗi sau khi save thành công
         } catch (err) {
-            alert('Error saving job info');
+            console.error(err);
+            alert('Error saving social links');
         }
-    }
+    };
+
 
     const getUrlByPlatform = (platform) => {
         return socialLinks.find(
@@ -54,7 +83,14 @@ export default function SocialLink() {
 
             return [...prev, { platform, url }];
         });
+
+        // clear lỗi khi user sửa
+        setErrors(prev => ({
+            ...prev,
+            [platform]: '',
+        }));
     };
+
 
 
     const SOCIAL_PLATFORMS = [
@@ -75,7 +111,6 @@ export default function SocialLink() {
         <div>
             <div className="social-link-card">
                 <h3>Social Links</h3>
-
                 {SOCIAL_PLATFORMS.map(p => (
                     <EditableRow
                         key={p.key}
@@ -83,6 +118,7 @@ export default function SocialLink() {
                         value={getUrlByPlatform(p.key)}
                         onChange={v => handleSocialChange(p.key, v)}
                         placeholder={p.placeholder}
+                        error={errors[p.key]}
                     />
                 ))}
             </div>

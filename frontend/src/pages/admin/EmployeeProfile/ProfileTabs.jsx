@@ -2,6 +2,7 @@ import './ProfileTabs.css';
 const tabs = [
   { key: 'timeline', label: 'Timeline' },
   { key: 'general', label: 'General Info' },
+  { key: 'contract', label: 'Contract' },
   { key: 'socical_links', label: 'Social Links' },
   { key: 'job', label: 'Job Info' },
   { key: 'account', label: 'Account settings' },

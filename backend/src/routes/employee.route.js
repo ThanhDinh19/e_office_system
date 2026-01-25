@@ -50,19 +50,24 @@ router.put(
 )
 
 router.put(
-    '/:/id/social-links',
+    '/:id/social-links',
     authenticate,
     authorize('ADMIN', 'HR'),
     employeeController.updateSocialLinks
 )
 
+router.put(
+  '/:id/contract',
+  authenticate,
+  authorize('ADMIN', 'HR'),
+  employeeController.updateEmployeeContract
+);
 
 // chỉ được xem dashboard cá nhân
-// router.get(
-//   '/me',
-//   authenticate,
-//   authorize('STAFF'),
-//   controller.getMyInfo
-// );
+router.get(
+  '/me/user',
+  authenticate,
+  employeeController.getMyInfo
+);
 
 module.exports = router;
