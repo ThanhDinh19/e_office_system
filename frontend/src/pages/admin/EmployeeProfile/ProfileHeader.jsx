@@ -4,7 +4,6 @@ import { getEmployeeById } from '../../../services/employee.service';
 import { useState, useEffect, useRef } from 'react';
 import { uploadAvatar } from '../../../services/employee.service';
 import './ProfileHeader.css';
-import { exportContract } from '../../../services/adminUser.service';
 
 export default function ProfileHeader() {
     const { id } = useParams();
@@ -64,16 +63,6 @@ export default function ProfileHeader() {
         }
     };
 
-    const ExportContract = async () => {
-        try {
-            await exportContract(id);
-            alert('Contract exported successfully');
-        } catch (err) {
-            console.error(err);
-            alert('Export contract failed: ' + err.message);
-        }
-    };
-
 
 
 return (
@@ -112,10 +101,6 @@ return (
                 <span className="role-badge">{employee?.User?.Roles?.[0]?.name || 'N/A'}</span>
                 <div>{employee?.email}</div>
                 <div>{employee?.phone}</div>
-
-                <div>
-                    <button onClick={ExportContract}>Export Contract</button>
-                </div>
             </div>
         </div>
 

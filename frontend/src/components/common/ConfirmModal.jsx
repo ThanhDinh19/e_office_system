@@ -6,6 +6,8 @@ export default function ConfirmModal({
   message,
   onConfirm,
   onCancel,
+  labelLeft = 'Cancel',
+  labelRight = 'Yes',
 }) {
   if (!open) return null;
 
@@ -21,10 +23,10 @@ export default function ConfirmModal({
 
         <div className="modal-actions">
           <button className="btn cancel" onClick={onCancel}>
-            Huỷ
+            {labelLeft}
           </button>
           <button className="btn delete" onClick={onConfirm}>
-            Xóa
+            {labelRight}
           </button>
         </div>
       </div>

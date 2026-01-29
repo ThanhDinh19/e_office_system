@@ -25,3 +25,8 @@ export const exportContract = async (id) => {
   link.parentNode.removeChild(link);
   window.URL.revokeObjectURL(url);
 }
+
+export const resetPassword = async (id) => {
+  const res = await axios.get(`/admin/users/reset-password/${id}`);
+  return res.data;
+}

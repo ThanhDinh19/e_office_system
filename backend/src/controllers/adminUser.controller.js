@@ -1,10 +1,11 @@
 
 const bcrypt = require('bcryptjs');
-const { User, Role, Employee, Position, Department, EmployeeContract, SocialLink, CompanyInfo } = require('../models');
+const {sequelize, User, Role, Employee, Position, Department, EmployeeContract, SocialLink, CompanyInfo, Authorization } = require('../models');
 const exportContract = require('../services/exportContract');
+const createAuthorizationNumber = require('../utils/createAuthorizationNumber.util');
 
 // có dùng
-exports.getUsers = async (req, res) => {  
+exports.getUsers = async (req, res) => {
   try {
     const users = await User.findAll({
       attributes: ['id', 'username', 'email', 'is_login_disabled', 'is_inactive'],
@@ -21,7 +22,7 @@ exports.getUsers = async (req, res) => {
             {
               model: Position,
               attributes: ['name'], // tên chức vụ
-            },  
+            },
           ],
         },
       ],
@@ -82,8 +83,6 @@ exports.deactivateUser = async (req, res) => {
     res.status(500).json({ message: 'Failed to deactivate user' });
   }
 };
-
-
 
 
 exports.createUser = async (req, res) => {
@@ -181,11 +180,11 @@ exports.resetPassword = async (req, res) => {
 
 
 // có dùng
-exports.exportContract = async (req, res) => {
+exports.exportEmployeeContract = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.userId; // lấy từ token
-
+    const t = await sequelize.transaction();
     // Lấy user trước, tim user của người xuất đơn để lấy được employee_id, khi có employee_id và tìm employee tức employee của người xuất đơn
     const user = await User.findByPk(userId, {
       attributes: [
@@ -277,6 +276,14 @@ exports.exportContract = async (req, res) => {
       ],
     });
 
+
+    const authorization = await createAuthorizationNumber({
+      type: 'UQ',
+      department: 'HR',
+      employeeId: authorizedPerson?.id,
+      transaction: t,
+    });
+
     // employe của người được xuất đơn
     const employee = await Employee.findByPk(id, {
       include: [
@@ -322,6 +329,8 @@ exports.exportContract = async (req, res) => {
             'job_description',
 
             'salary',
+            'salary_grade',
+            'salary_level',
             'contract_file',
 
             'sign_date',
@@ -339,7 +348,7 @@ exports.exportContract = async (req, res) => {
       return res.status(404).json({ message: 'Employee not found' });
     }
 
-    const fileBuffer = await exportContract(employee, authorizedPerson, companyInfo);
+    const fileBuffer = await exportContract(employee, authorizedPerson, authorization, companyInfo);
     res.setHeader('Content-Disposition', 'attachment; filename=contract.docx');
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
     res.send(fileBuffer);
@@ -348,3 +357,4 @@ exports.exportContract = async (req, res) => {
     res.status(500).json({ message: 'Failed to export contract' });
   }
 };
+

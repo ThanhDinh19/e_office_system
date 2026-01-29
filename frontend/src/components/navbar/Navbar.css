@@ -72,3 +72,14 @@
   color: #dc2626;
   font-weight: 600;
 }
+
+.navbar-right{
+  display: flex;
+  gap: 10px;
+}
+
+.icon-feature{
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+}

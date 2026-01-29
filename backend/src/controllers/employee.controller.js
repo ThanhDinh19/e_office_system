@@ -12,7 +12,7 @@ const getAllEmployees = async (req, res, next) => {
   try {
     const employees = await Employee.findAll();
     res.json(employees);
-  } catch (error) {
+  } catch (error) { 
     next(error); // đẩy lỗi về global error handler
   }
 };
@@ -114,7 +114,6 @@ const getMyInfo = async (req, res, next) => {
     next(error);
   }
 };
-
 
 /**
  * GET /api/employees/:id
@@ -506,7 +505,7 @@ const getSocialLinks = async (req, res) => {
 };
 
 
-const updateEmployeeContract = async (req, res) => {
+const updateEmployeeContract = async (req, res) => {``
   const t = await sequelize.transaction();
 
   try {
@@ -523,7 +522,6 @@ const updateEmployeeContract = async (req, res) => {
 
     await employee.update(employeeData, { transaction: t });
 
-   
     const contractData = mapEmployeeContractData(req.body, id);
   
     const contract = await EmployeeContract.findOne({

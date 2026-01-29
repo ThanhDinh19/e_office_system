@@ -1,0 +1,135 @@
+/* ===== Overlay ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* ===== Modal Box ===== */
+.modal-box {
+  background: #fff;
+  width: 520px;
+  max-width: 95%;
+  border-radius: 5px;
+  padding: 24px 28px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: fadeInScale 0.25s ease;
+}
+
+/* ===== Animation ===== */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== Titles ===== */
+.modal-box h3 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #222222b3;
+}
+
+/* ===== Inputs ===== */
+.modal-box input,
+.modal-box textarea,
+.modal-box select {
+  width: 95%;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.modal-box textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-box input:focus,
+.modal-box textarea:focus,
+.modal-box select:focus {
+  border-color: #4f46e5;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+}
+
+/* ===== Select spacing (members) ===== */
+.modal-box select {
+  background: #fff;
+  width: 100%;
+}
+
+/* ===== Add More Button ===== */
+.modal-box button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-box button:hover {
+  opacity: 0.9;
+}
+
+/* ===== Action Buttons ===== */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* ===== Button Styles ===== */
+.modal-actions button {
+  background: #f3f4f6;
+  color: #333;
+}
+
+.modal-actions button.primary {
+  background: #4f46e5;
+  color: #fff;
+}
+
+.modal-actions button.primary:hover {
+  background: #4338ca;
+}
+
+/* ===== Secondary Buttons ===== */
+.modal-box > button:not(.primary) {
+  background: #e5e7eb;
+  color: #111;
+}
+
+.modal-box > button:not(.primary):hover {
+  background: #d1d5db;
+}
+
+/* ===== Small Screen ===== */
+@media (max-width: 480px) {
+  .modal-box {
+    padding: 18px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+}
