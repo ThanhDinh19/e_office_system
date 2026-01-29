@@ -5,7 +5,9 @@ import { EditableRow } from '../../../../components/widgets/EditableRow';
 import { getEmployeeById, updateAccount } from '../../../../services/employee.service';
 import { getRoles } from '../../../../services/role.service';
 import './AccountSetting.css';
-import {getUsers} from "../../../../services/adminUser.service";
+import { getUsers } from "../../../../services/adminUser.service";
+import ConfirmModal from '../../../../components/common/ConfirmModal';
+import { resetPassword } from '../../../../services/adminUser.service';
 
 export default function AccountSetting() {
     const { id } = useParams();
@@ -14,12 +16,16 @@ export default function AccountSetting() {
     const { showNotification } = useNotification();
     const [roles, setRoles] = useState([]);
     const [users, setUser] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(null);
 
     useEffect(() => {
         const fetchEmployee = async () => {
             if (id) {
                 const emp = await getEmployeeById(id);
                 setFormData({
+                    user_id: emp.User?.id || '',
+                    full_name: emp?.full_name || '',
                     email: emp.User?.email || '',
                     password: '',
                     confirm_password: '',
@@ -32,7 +38,7 @@ export default function AccountSetting() {
 
         const fetchUsers = async () => {
             const userData = await getUsers();
-            setUser(userData);  
+            setUser(userData);
         }
 
         const fetchRoles = async () => {
@@ -60,17 +66,17 @@ export default function AccountSetting() {
             }
         });
 
-        if(formData.password !== formData.confirm_password){
+        if (formData.password !== formData.confirm_password) {
             newErrors.confirm_password = 'Passwords do not match';
         }
 
         users.forEach(u => {
             console.log(u.Employee?.id)
 
-            if(u.Employee?.id == id){
+            if (u.Employee?.id == id) {
                 return;
             }
-            if(u.email === formData.email){ 
+            if (u.email === formData.email) {
                 newErrors.email = 'Email already exists';
             }
         });
@@ -86,7 +92,6 @@ export default function AccountSetting() {
             console.log(formData);
             // TODO: gọi API PUT /employees/:id
             await updateAccount(id, formData);
-            
             showNotification('Account updated successfully', 'success');
         } catch (err) {
             alert('Faild to update account');
@@ -94,61 +99,100 @@ export default function AccountSetting() {
     };
 
     return (
-        <div className="account-setting-card">
-            <h3>Account Settings</h3>
+        <>
+            <div className="account-setting-card">
+                <h3>Account Settings</h3>
 
-            <EditableRow
-                label="Email"
-                value={formData.email}
-                onChange={v => updateField('email', v)}
-                error={errors.email}
-                placeholder='Email'
-            />
+                <EditableRow
+                    label="Email"
+                    value={formData.email}
+                    onChange={v => updateField('email', v)}
+                    error={errors.email}
+                    placeholder='Email'
+                />
 
-            <EditableRow
-                label="Password"
-                value={formData.password}
-                onChange={v => updateField('password', v)}
-                error={errors.password}
-                placeholder='Password'
-            />
+                <EditableRow
+                    label="Password"
+                    value={formData.password}
+                    onChange={v => updateField('password', v)}
+                    error={errors.password}
+                    placeholder='Password'
+                />
 
-            <EditableRow
-                label="Confirm Password"
-                value={formData.confirm_password}
-                onChange={v => updateField('confirm_password', v)}
-                error={errors.confirm_password}
-                placeholder='Confirm Password'
-            />
+                <EditableRow
+                    label="Confirm Password"
+                    value={formData.confirm_password}
+                    onChange={v => updateField('confirm_password', v)}
+                    error={errors.confirm_password}
+                    placeholder='Confirm Password'
+                />
 
-            <EditableRow
-                label="Role"
-                type="select"
-                value={formData.role}
-                options={roles}
-                onChange={v => updateField('role', v)}
-                error={errors.role} 
-            />
+                <EditableRow
+                    label="Role"
+                    type="select"
+                    value={formData.role}
+                    options={roles}
+                    onChange={v => updateField('role', v)}
+                    error={errors.role}
+                />
 
-            <EditableRow
-                label="Disable login"
-                type="checkbox"
-                value={formData.is_login_disabled}
-                onChange={v => updateField('is_login_disabled', v)}
-            />
+                <EditableRow
+                    label="Disable login"
+                    type="checkbox"
+                    value={formData.is_login_disabled}
+                    onChange={v => updateField('is_login_disabled', v)}
+                />
 
-            <EditableRow
-                label="Mark as inactive"
-                type="checkbox"
-                value={formData.is_inactive}
-                onChange={v => updateField('is_inactive', v)}
-            />
-            <div className="save-bar">
-                <button className="btn primary" onClick={handleSave}>
-                    Save
-                </button>
+                <EditableRow
+                    label="Mark as inactive"
+                    type="checkbox"
+                    value={formData.is_inactive}
+                    onChange={v => updateField('is_inactive', v)}
+                />
+
+                <div className='btn-handle'>
+                    <div className="btn-reset-password-bar">
+                        <button className="btn-save" onClick={() => {
+                            setSelectedUserId(formData.user_id)
+                            setShowModal(true);
+                        }}>
+                            Reset password
+                        </button>
+                    </div>
+
+                    <div className="btn-save-bar">
+                        <button
+                            className="btn-save" onClick={handleSave}>
+                            Save
+                        </button>
+                    </div>
+                </div>
             </div>
 
-        </div>
+            <ConfirmModal
+                open={showModal}
+                title="Reset password"
+                message={`Are you sure you want to reset the password for "${formData.full_name}"?`}
+                onCancel={() => {
+                    setShowModal(false);
+                    setSelectedUserId(null);
+                }}
+                onConfirm={async () => {
+                    try {
+                        await resetPassword(selectedUserId);
+                        showNotification('Password has been reset successfully', 'success');
+
+                        setShowModal(false);
+                        setSelectedUserId(null);
+                    } catch (err) {
+                        console.error(err);
+                        showNotification('Failed to reset password', 'error');
+                    }
+                }}
+                labelLeft="Cancel"
+                labelRight="Reset"
+            />
+
+        </>
     );
 }

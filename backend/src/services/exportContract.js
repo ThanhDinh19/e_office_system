@@ -5,8 +5,22 @@ const Docxtemplater = require('docxtemplater');
 const authorize = require('../middlewares/role.middleware');
 
 
-function exportContract(employee, authorizedPerson, companyInfo) {
-  const templatePath = path.join(__dirname, '../templates/probationary_contract.docx');
+function exportContract(employee, authorizedPerson, authorization, companyInfo) {
+
+  let templatePath = '';
+
+  const contract = employee?.EmployeeContracts?.[0] || {};
+  const contract_type = contract?.contract_type || '';
+
+  if (contract_type === 'PROBATION') {
+    templatePath = path.join(__dirname, '../templates/probationary_contract.docx');
+  } else if(contract_type === 'FIXED-TERM') {
+    templatePath = path.join(__dirname, '../templates/fixed_term_contract.docx');
+  }
+  else{
+    templatePath = path.join(__dirname, '../templates/training_contract.docx');
+  }
+
 
   // Check if template file exists
   if (!fs.existsSync(templatePath)) {
@@ -21,9 +35,23 @@ function exportContract(employee, authorizedPerson, companyInfo) {
     linebreaks: true,
   });
 
-  const contract = employee?.EmployeeContracts?.[0] || {};
+
+
+  console.log({
+    contract
+  });
+
+  const now = new Date();
+
+  const day = now.getDate();
+  const month = now.getMonth() + 1; // tháng bắt đầu từ 0
+  const year = now.getFullYear();
 
   doc.render({
+
+    // số ủy quyền
+    authorization: authorization.authorization_no,
+
     // bên a
     company_name: companyInfo.company_name,
     company_address: companyInfo.address,
@@ -71,10 +99,17 @@ function exportContract(employee, authorizedPerson, companyInfo) {
     department_name: contract?.department_name,
     job_description: contract?.job_description,
     salary: contract?.salary,
-    salary_grade: contract?.salary_grade?.trim() || null,
-    salary_level: contract?.salary_level?.trim() || null,
+    salary_grade: contract?.salary_grade || '',
+    salary_level: contract?.salary_level?.toString() || '',
+
     now_date: new Date().toLocaleDateString('vi-VN'),
     sign_date: new Date().toLocaleDateString('vi-VN'),
+
+    day: day,
+    month: month,
+    year: year,
+
+
   });
 
   const buffer = doc.getZip().generate({ type: 'nodebuffer' });

@@ -86,47 +86,49 @@ export default function UserManagement() {
     return (
         <>
             {/* ===== Header ===== */}
-            <div className="um-header">
-                <h2>Team members</h2>
+            <div className='feature' >
+                <div className="um-header">
+                    <h2>Team members</h2>
 
-                <div className="um-actions">
-                    <button className="btn">Import team members</button>
-                    <button className="btn">Send invitation</button>
-                    <button
-                        className="btn primary"
-                        onClick={() => setOpenWizard(true)}
-                    >
-                        + Add member
-                    </button>
-                </div>
-            </div>
-
-            {/* ===== Tabs + Tools ===== */}
-            <div className="um-toolbar">
-                <div className="um-tabs">
-                    <button
-                        className={is_inactiveTab === false ? 'active' : ''}
-                        onClick={() => setInActiveTab(false)}
-                    >
-                        Active members
-                    </button>
-                    <button
-                        className={is_inactiveTab === true ? 'active' : ''}
-                        onClick={() => setInActiveTab(true)}
-                    >
-                        Inactive members
-                    </button>
+                    <div className="um-actions">
+                        <button className="btn">Import team members</button>
+                        <button className="btn">Send invitation</button>
+                        <button
+                            className="btn primary"
+                            onClick={() => setOpenWizard(true)}
+                        >
+                            + Add member
+                        </button>
+                    </div>
                 </div>
 
-                <div className="um-tools">
-                    <button className="btn small" onClick={handleExportExcel}>Excel</button>
-                    <button className="btn small">Print</button>
-                    <input
-                        className="search"
-                        placeholder="Search name, email, phone..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                {/* ===== Tabs + Tools ===== */}
+                <div className="um-toolbar">
+                    <div className="um-tabs">
+                        <button
+                            className={is_inactiveTab === false ? 'active' : ''}
+                            onClick={() => setInActiveTab(false)}
+                        >
+                            Active members
+                        </button>
+                        <button
+                            className={is_inactiveTab === true ? 'active' : ''}
+                            onClick={() => setInActiveTab(true)}
+                        >
+                            Inactive members
+                        </button>
+                    </div>
+
+                    <div className="um-tools">
+                        <button className="btn small" onClick={handleExportExcel}>Excel</button>
+                        <button className="btn small">Print</button>
+                        <input
+                            className="search"
+                            placeholder="Search name, email, phone..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -220,6 +222,8 @@ export default function UserManagement() {
                         alert('Remove user failed');
                     }
                 }}
+                labelLeft='Cancel'
+                labelRight='Delete'
             />
 
 

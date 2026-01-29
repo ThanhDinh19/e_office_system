@@ -1,5 +1,10 @@
 import axios from './axios'; // axios đã gắn token interceptor
 
+export const getEmployees = async () => {
+  const res = await axios.get('/employees');
+  return res.data;
+}
+
 export const createEmployee = async (data) => {
   const res = await axios.post('/employees', data);
   return res.data;

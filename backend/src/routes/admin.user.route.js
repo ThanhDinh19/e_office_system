@@ -36,7 +36,14 @@ router.get(
   '/users/export-contract/:id',
   authenticate,
   authorize('ADMIN'),
-  adminUserController.exportContract
+  adminUserController.exportEmployeeContract
+);
+
+router.get(
+  '/users/reset-password/:id',
+  authenticate,
+  authorize('ADMIN'),
+  adminUserController.resetPassword
 );
 
 router.delete(

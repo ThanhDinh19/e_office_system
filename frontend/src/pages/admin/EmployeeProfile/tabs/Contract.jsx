@@ -161,12 +161,14 @@ export default function Contract() {
         if (value == "PROBATION") return "Probation"
         if (value == "FIXED_TERM") return "Fixed-term"
         if (value == "INDEFINITE") return "Indefinite"
+        if (value == "TRAINING") return "Training"
     }
 
     const CONTRACT_TYPE_OPTIONS = [
         { id: 'PROBATION', name: 'PROBATION' },
         { id: 'FIXED_TERM', name: 'FIXED_TERM' },
         { id: 'INDEFINITE', name: 'INDEFINITE' },
+        { id: 'TRAINING', name: 'TRAINING'},
     ];
 
     const SALARY_GRADE_OPTIONS = [
@@ -194,7 +196,7 @@ export default function Contract() {
     const ExportContract = async () => {
         try {
             await exportContract(id);
-            alert('Contract exported successfully');
+            showNotification('Contract exported successfully', 'success');
         } catch (err) {
             console.error(err);
             alert('Export contract failed: ' + err.message);
@@ -455,22 +457,67 @@ export default function Contract() {
                         placeholder='Duration months'
                     />
 
-                    <EditableRow
-                        label="Probation from"
-                        type="date"
-                        value={formData.probation_from}
-                        onChange={v => updateField('probation_from', v)}
-                        placeholder='Probation from'
-                    />
 
-                    <EditableRow
-                        label="Probation to"
-                        type="date"
-                        value={formData.probation_to}
-                        onChange={v => updateField('probation_to', v)}
-                        placeholder='Probation to'
-                    />
+                    {formData.contract_type === 'FIXED_TERM' && (
+                        <>
+                            <EditableRow
+                                label="Start date"
+                                type="date"
+                                value={formData.start_date}
+                                onChange={v => updateField('start_date', v)}
+                                placeholder="Start date"
+                            />
 
+                            <EditableRow
+                                label="End date"
+                                type="date"
+                                value={formData.end_date}
+                                onChange={v => updateField('end_date', v)}
+                                placeholder="End date"
+                            />
+                        </>
+                    )}
+
+
+                    {formData.contract_type === 'PROBATION' && (
+                        <>
+                            <EditableRow
+                                label="Probation from"
+                                type="date"
+                                value={formData.probation_from}
+                                onChange={v => updateField('probation_from', v)}
+                                placeholder="Probation from"
+                            />
+
+                            <EditableRow
+                                label="Probation to"
+                                type="date"
+                                value={formData.probation_to}
+                                onChange={v => updateField('probation_to', v)}
+                                placeholder="Probation to"
+                            />
+                        </>
+                    )}
+
+                      {formData.contract_type === 'TRAINING' && (
+                        <>
+                            <EditableRow
+                                label="Start date"
+                                type="date"
+                                value={formData.start_date}
+                                onChange={v => updateField('start_date', v)}
+                                placeholder="Start date"
+                            />
+
+                            <EditableRow
+                                label="End date"
+                                type="date"
+                                value={formData.end_date}
+                                onChange={v => updateField('end_date', v)}
+                                placeholder="End date"
+                            />
+                        </>
+                    )}
 
                     <EditableRow
                         label="Workplace"

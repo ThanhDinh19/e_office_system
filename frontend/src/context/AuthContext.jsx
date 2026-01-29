@@ -1,6 +1,7 @@
 // AUTH CONTEXT – LƯU TOKEN + ROLE
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext();
 
@@ -10,12 +11,22 @@ export const AuthProvider = ({ children }) => {
   );
   const [token, setToken] = useState(localStorage.getItem('token'));
 
+
+  const isTokenExpired = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.exp * 1000 < Date.now();
+    } catch (err) {
+      return true; // token lỗi → coi như hết hạn
+    }
+  };
+
   const login = (data) => {
     setUser(data.user);
     setToken(data.token);
 
     localStorage.setItem('user', JSON.stringify(data.user));
-    localStorage.setItem('token', data.token); 
+    localStorage.setItem('token', data.token);
   };
 
   const logout = () => {
@@ -23,6 +34,12 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     localStorage.clear();
   };
+
+  useEffect(() => {
+    if (token && isTokenExpired(token)) {
+      logout();
+    }
+  }, [token]);
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout }}>
