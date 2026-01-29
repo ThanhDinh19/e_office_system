@@ -1,15 +1,18 @@
 const { sequelize, Project, Employee, ProjectMember, TaskGroup, Task, TaskComment } = require('../models')
 const { mapProjectData } = require('../mappers/project.mapper');
 
-
 const getProjects = async (req, res) => {
-    try {
-        const projects = await Project.findAll();
-        res.json(projects);
-    } catch (err) {
-        res.status(500).json({ message: 'Failed to get projects' })
-    }
-}
+  try {
+    const projects = await Project.findAll({
+      order: [['id', 'DESC']],
+    });
+
+    res.json(projects);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to get projects' });
+  }
+};
 
 
 const getProjectMembers = async (req, res) => {

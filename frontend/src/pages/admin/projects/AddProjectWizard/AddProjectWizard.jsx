@@ -30,15 +30,20 @@ export default function AddProjectWizard({ open, project, onClose, onSuccess }) 
           <StepMemberForm
             projectId={projectId}
             onNext={() => setStep(3)}
-            onSkip={() => setStep(3)}
+            onSkip={() => {
+              onSuccess?.();   // reload list project
+              onClose();       // đóng wizard
+            }}
             onClose={onClose}
           />
         )}
+
 
         {step === 3 && (
           <StepTaskForm
             projectId={projectId}
             onClose={onClose}
+            onSuccess={onSuccess}
           />
         )}
       </div>

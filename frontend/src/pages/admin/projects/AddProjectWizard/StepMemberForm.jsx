@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getEmployees } from '../../../../services/employee.service';
 import { addProjectMembers } from '../../../../services/project.service';
 
-export default function StepMemberForm({ projectId, onNext, onSkip, onClose }) {
+export default function StepMemberForm({ projectId, onNext, onSkip, onClose, onSuccess}) {
   const [employees, setEmployees] = useState([]);
   const [members, setMembers] = useState([{ id: '', role: '' }]);
   const [loading, setLoading] = useState(false);
@@ -32,6 +32,7 @@ export default function StepMemberForm({ projectId, onNext, onSkip, onClose }) {
       if (validMembers.length > 0) {
         await addProjectMembers(projectId, validMembers.map(m => m.id));
       }
+      onSuccess?.();
       onNext();
     } catch (err) {
       console.error(err);
