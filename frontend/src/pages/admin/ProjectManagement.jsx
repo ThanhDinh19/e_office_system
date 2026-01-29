@@ -11,11 +11,15 @@ export default function ProjectManagement() {
     const [openAddProject, setOpenAddProject] = useState(false);
     const [projects, setProjects] = useState([]);
     const [editingProject, setEditingProject] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 8;
 
     const fetchProjects = async () => {
         const data = await getProjects();
         setProjects(data);
-    }
+        setCurrentPage(1);
+    };
+
 
     useEffect(() => {
         fetchProjects();
@@ -51,23 +55,20 @@ export default function ProjectManagement() {
 
         try {
             await deleteProject(id);
-
-            // Cách 1 (nhanh & mượt): remove khỏi state
             setProjects(prev => prev.filter(p => p.id !== id));
-
-            // Cách 2 (nếu backend có logic phức tạp):
-            // await fetchProjects();
-
         } catch (err) {
             console.error(err);
             alert('Delete project failed');
         }
     };
 
-
+    const totalPages = Math.ceil(projects.length / pageSize);
+    const paginatedProjects = projects.slice(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
+    );
 
     return (
-
         <>
             <div className="project-management">
                 {/* Header */}
@@ -159,7 +160,7 @@ export default function ProjectManagement() {
                     <table className="pm-table">
                         <thead>
                             <tr>
-                                <th className="pm-th pm-th-id">ID</th>
+                                {/* <th className="pm-th pm-th-id">ID</th> */}
                                 <th className="pm-th pm-th-title">Title</th>
                                 <th className="pm-th">Client</th>
                                 <th className="pm-th pm-th-sort">
@@ -180,9 +181,9 @@ export default function ProjectManagement() {
                             </tr>
                         </thead>
                         <tbody>
-                            {projects.map((project) => (
+                            {paginatedProjects.map((project) => (
                                 <tr key={project.id} className="pm-row">
-                                    <td className="pm-td pm-td-id">{project.id}</td>
+                                    {/* <td className="pm-td pm-td-id">{project.id}</td> */}
 
                                     {/* TITLE */}
                                     <td className="pm-td pm-td-title">
@@ -199,9 +200,8 @@ export default function ProjectManagement() {
 
                                     {/* CLIENT = project_type */}
                                     <td className="pm-td pm-td-client">
-                                        {project.project_type || '-'}
+                                        {project.project_type === 'Client Project' ? 'Client Project' : '-'}
                                     </td>
-
                                     <td className="pm-td"></td>
 
                                     {/* PRICE */}
@@ -222,7 +222,7 @@ export default function ProjectManagement() {
                                         {project.end_date}
                                     </td>
 
-                                    
+
 
                                     {/* STATUS (chưa có trong DB) */}
                                     <td className="pm-td pm-td-status">
@@ -255,6 +255,38 @@ export default function ProjectManagement() {
                             ))}
                         </tbody>
                     </table>
+
+                    <div className="pm-pagination">
+                        <button
+                            className="pm-page-btn"
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage(p => p - 1)}
+                        >
+                            Prev
+                        </button>
+
+                        {Array.from({ length: totalPages }).map((_, index) => {
+                            const page = index + 1;
+                            return (
+                                <button
+                                    key={page}
+                                    className={`pm-page-btn ${currentPage === page ? 'active' : ''}`}
+                                    onClick={() => setCurrentPage(page)}
+                                >
+                                    {page}
+                                </button>
+                            );
+                        })}
+
+                        <button
+                            className="pm-page-btn"
+                            disabled={currentPage === totalPages}
+                            onClick={() => setCurrentPage(p => p + 1)}
+                        >
+                            Next
+                        </button>
+                    </div>
+
                 </div>
             </div>
 

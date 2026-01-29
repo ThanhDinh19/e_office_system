@@ -6,7 +6,7 @@ import {
 } from '../../../../services/project.service';
 import './StepTaskForm.css';
 
-export default function StepTaskForm({ projectId, onClose }) {
+export default function StepTaskForm({ projectId, onClose, onSuccess }) {
   const [members, setMembers] = useState([]);
   const [globalAssignedIds, setGlobalAssignedIds] = useState([]); // Tất cả members đã được assign
   
@@ -172,6 +172,7 @@ export default function StepTaskForm({ projectId, onClose }) {
       }
 
       alert('All groups created successfully!');
+      onSuccess?.();
       onClose();
     } catch (error) {
       console.error('Error creating groups:', error);
