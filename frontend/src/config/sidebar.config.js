@@ -9,6 +9,7 @@ import {
   Folder,
   BarChart3,
   Settings,
+  Wrench,
 } from 'lucide-react';
 
 export const SIDEBAR_CONFIG = {
@@ -20,6 +21,7 @@ export const SIDEBAR_CONFIG = {
     { label: 'Tasks', path: '/admin/tasks', icon: CheckSquare },
     { label: 'Members', path: '/admin/users', icon: UserCog },
     { label: 'Tickets', path: '/admin/tickets', icon: LifeBuoy },
+    { label: 'IT Services', path: '/admin/itservices', icon: Wrench},
     { label: 'File', path: '/admin/files', icon: Folder },
     { label: 'Reports', path: '/admin/reports', icon: BarChart3 },
     { label: 'Settings', path: '/admin/settings', icon: Settings },
@@ -40,11 +42,12 @@ export const SIDEBAR_CONFIG = {
   ],
 
   STAFF: [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'My Profile', path: '/profile' },
-    { label: 'My Leave Requests', path: '/my-leave' },
-    { label: 'My Tasks', path: '/my-tasks' },
+    {label: 'Dashboard',path: '/dashboard',icon: LayoutDashboard,},
+    {label: 'Tickets', path: '/tickets',icon: FolderKanban,},
+    {label: 'Leave Requests', path: '/my-leave', icon: CalendarDays,},
+    {label: 'My Tasks',path: '/my-tasks',icon: CheckSquare,},
   ],
+
 
   IT_SUPPORT: [
     { label: 'Dashboard', path: '/dashboard' },

@@ -53,3 +53,4 @@ export const updateContract = async (id, data) => {
   const res = await axios.put(`/employees/${id}/contract`, data)
   return res.data;
 }
+

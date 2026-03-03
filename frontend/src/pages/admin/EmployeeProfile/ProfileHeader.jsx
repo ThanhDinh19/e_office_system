@@ -116,7 +116,7 @@ return (
 
 const Stat = ({ label, value }) => (
     <div className="stat-box">
-        <div className="stat-value">{value}</div>
-        <div className="stat-label">{label}</div>
+        <div className="stat-value-header">{value}</div>
+        <div className="stat-label-header">{label}</div>
     </div>
 );

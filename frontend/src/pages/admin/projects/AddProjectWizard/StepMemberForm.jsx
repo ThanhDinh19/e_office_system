@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getEmployees } from '../../../../services/employee.service';
 import { addProjectMembers } from '../../../../services/project.service';
 
-export default function StepMemberForm({ projectId, onNext, onSkip, onClose, onSuccess}) {
+export default function StepMemberForm({ projectId, onNext, onSkip, onClose, onSuccess }) {
   const [employees, setEmployees] = useState([]);
   const [members, setMembers] = useState([{ id: '', role: '' }]);
   const [loading, setLoading] = useState(false);
@@ -42,32 +42,34 @@ export default function StepMemberForm({ projectId, onNext, onSkip, onClose, onS
     }
   };
 
+  // Thay đổi phần return một chút
   return (
-    <>
-      <h3>👥 Add Team Members</h3>
+    <div className="wizard-form-container">
+      <h3>👥 Team Members</h3>
 
       <div className="form-section">
-        <h4>Select Project Members</h4>
-        
+        <h4>Assign employees to this project</h4>
+
         {members.map((member, index) => (
           <div key={index} className="member-row">
             <select
+              className="form-control" // Dùng chung class form-control đã viết ở step 1
               value={member.id}
               onChange={(e) => updateMember(index, 'id', e.target.value)}
             >
-              <option value="">Select member</option>
+              <option value="">Select member...</option>
               {employees.map((emp) => (
                 <option key={emp.id} value={emp.id}>
-                  {emp.full_name} - {emp.position || 'Staff'}
+                  {emp.full_name} — {emp.position || 'Staff'}
                 </option>
               ))}
             </select>
 
             {members.length > 1 && (
-              <button 
+              <button
                 type="button"
+                className="btn-remove"
                 onClick={() => removeMember(index)}
-                title="Remove member"
               >
                 ×
               </button>
@@ -75,26 +77,26 @@ export default function StepMemberForm({ projectId, onNext, onSkip, onClose, onS
           </div>
         ))}
 
-        <button 
-          type="button" 
-          className="add-more-btn" 
+        <button
+          type="button"
+          className="add-more-btn"
           onClick={addMember}
         >
-          Add another member
+          + Add Another Member
         </button>
       </div>
 
       <div className="modal-actions">
-        <button onClick={onClose}>Cancel</button>
-        <button onClick={onSkip}>Skip this step</button>
-        <button 
-          className="primary" 
+        <button className="btn-secondary" onClick={onClose}>Cancel</button>
+        <button className="btn-skip" onClick={onSkip}>Skip for now</button>
+        <button
+          className="btn-primary"
           onClick={saveMembers}
-          disabled={loading}
+          disabled={loading || members.every(m => !m.id)}
         >
           {loading ? 'Saving...' : 'Save & Continue'}
         </button>
       </div>
-    </>
+    </div>
   );
 }

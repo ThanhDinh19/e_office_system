@@ -1,0 +1,159 @@
+.ticket-page {
+  padding: 24px;
+  background: #f7f9fc;
+}
+
+.ticket-page h2 {
+  margin-bottom: 16px;
+}
+
+.ticket-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.ticket-tabs button {
+  border: none;
+  background: transparent;
+  color: #777;
+  cursor: pointer;
+}
+
+.ticket-tabs .active {
+  color: #00a991;
+  font-weight: 600;
+}
+
+.count {
+  background: #e5f7f4;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.ticket-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.filter-btn,
+.dropdown-priority{
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.filter-btn,
+.dropdown-status{
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: white;
+  flex: 1;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+.create-btn {
+  background: #00a991;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.ticket-table {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  border-collapse: collapse;
+}
+
+.ticket-table th,
+.ticket-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+
+
+.priority {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 90px;     /*  cố định kích thước */
+  height: 26px;
+
+  padding: 0 8px;      /* vẫn giữ padding ngang */
+  border-radius: 12px;
+  font-size: 13px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.priority.critical {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.priority.high {
+  background: #ffe5e5;
+  color: #e53935;
+}
+
+.priority.medium {
+  background: #fff4d6;
+  color: #ff9800;
+}
+
+.priority.low {
+  background: #e6f7e9;
+  color: #2e7d32;
+}
+
+
+.status.open {
+  color: #2979ff;
+}
+
+
+.status.resolved {
+  color: #2e7d32;
+}
+
+.icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.pagination-tickets {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+}

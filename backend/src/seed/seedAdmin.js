@@ -60,6 +60,33 @@ const createDefaultUsers = async () => {
         contract_type: 'INDEFINITE',
         salary: 40000000,
       },
+      {
+        employee_id: 7,
+        username: 'itsupport01',
+        email: 'itsupport01@company.com',
+        password: 'itsupport123',
+        role_id: 5,
+        contract_type: 'INDEFINITE',
+        salary: 40000000,
+      },
+      {
+        employee_id: 8,
+        username: 'itsupport02',
+        email: 'itsupport02@company.com',
+        password: 'itsupport123',
+        role_id: 5,
+        contract_type: 'INDEFINITE',
+        salary: 40000000,
+      },
+      {
+        employee_id: 9,
+        username: 'itsupport03',
+        email: 'itsupport03@company.com',
+        password: 'itsupport123',
+        role_id: 5,
+        contract_type: 'INDEFINITE',
+        salary: 40000000,
+      },
     ];
 
     for (const u of DEFAULT_USERS) {

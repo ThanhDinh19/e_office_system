@@ -55,70 +55,113 @@ export default function StepProjectForm({ mode = 'create', initialData, onNext, 
   };
 
   return (
-    <>
-      <h3>Add project</h3>
+    <div className="wizard-form-container">
+      <h3>{mode === 'edit' ? 'Edit Project' : 'Add Project'}</h3>
 
-      <input
-        placeholder="Title"
-        value={form.name}
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
-      />
+      {/* Row 1: Title */}
+      <div className="form-group">
+        <label>Project Title</label>
+        <input
+          className="form-control"
+          placeholder="E.g. Website Redesign"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
+      </div>
 
-      <select
-        value={form.project_type}
-        onChange={(e) => setForm({ ...form, project_type: e.target.value })}
-      >
-        <option value="Client Project">Client Project</option>
-        <option value="Internal Project">Internal Project</option>
-      </select>
+      {/* Row 2: Type & Price */}
+      <div className="form-row">
+        <div className="form-group flex-1">
+          <label>Project Type</label>
+          <select
+            className="form-control"
+            value={form.project_type}
+            onChange={(e) => setForm({ ...form, project_type: e.target.value })}
+          >
+            <option value="Client Project">Client Project</option>
+            <option value="Internal Project">Internal Project</option>
+          </select>
+        </div>
+        <div className="form-group flex-1">
+          <label>Price ($)</label>
+          <input
+            type="number"
+            className="form-control"
+            placeholder="0.00"
+            value={form.price}
+            onChange={(e) => setForm({ ...form, price: e.target.value })}
+          />
+        </div>
+      </div>
 
-      <textarea
-        placeholder="Description"
-        value={form.description}
-        onChange={(e) => setForm({ ...form, description: e.target.value })}
-      />
+      {/* Row 3: Description */}
+      <div className="form-group">
+        <label>Description</label>
+        <textarea
+          className="form-control"
+          rows="3"
+          placeholder="Briefly describe the project goals..."
+          value={form.description}
+          onChange={(e) => setForm({ ...form, description: e.target.value })}
+        />
+      </div>
 
-      <input
-        type="date"
-        value={form.start_date}
-        onChange={(e) => setForm({ ...form, start_date: e.target.value })}
-      />
+      {/* Row 4: Dates */}
+      <div className="form-row">
+        <div className="form-group flex-1">
+          <label>Start Date</label>
+          <input
+            type="date"
+            className="form-control"
+            value={form.start_date}
+            onChange={(e) => setForm({ ...form, start_date: e.target.value })}
+          />
+        </div>
+        <div className="form-group flex-1">
+          <label>End Date</label>
+          <input
+            type="date"
+            className="form-control"
+            value={form.end_date}
+            onChange={(e) => setForm({ ...form, end_date: e.target.value })}
+          />
+        </div>
+      </div>
 
-      <input
-        type="date"
-        value={form.end_date}
-        onChange={(e) => setForm({ ...form, end_date: e.target.value })}
-      />
+      {/* Row 5: Labels */}
+      <div className="form-group">
+        <label>Labels</label>
+        <select
+          className="form-control"
+          value={form.labels}
+          onChange={(e) => setForm({ ...form, labels: e.target.value })}
+        >
+          <option value="">Select a label</option>
+          <option value="High Priority">High Priority</option>
+          <option value="Urgent">Urgent</option>
+          <option value="On Track">On Track</option>
+          <option value="Low Priority">Low Priority</option>
+        </select>
+      </div>
 
-      <input
-        placeholder="Price"
-        value={form.price}
-        onChange={(e) => setForm({ ...form, price: e.target.value })}
-      />
-
-      <select
-        value={form.labels}
-        onChange={(e) => setForm({ ...form, labels: e.target.value })}
-      >
-        <option value="">Labels</option>
-        <option value="High Priority">High Priority</option>
-        <option value="Urgent">Urgent</option>
-        <option value="On Track">On Track</option>
-      </select>
-
+      {/* Footer Actions */}
       <div className="modal-actions">
-        <button onClick={onClose}>Cancel</button>
-
-        <button onClick={handleSave}>
-          {mode === 'edit' ? 'Update' : 'Save'}
+        <button className="btn-secondary" onClick={onClose}>
+          Cancel
         </button>
 
+        {/* Luôn hiện nút Save/Update chính */}
+        <button className="btn-default" onClick={handleSave}>
+          {mode === 'edit' ? 'Update Project' : 'Save & Exit'}
+        </button>
+
+        {/* Chỉ hiện nút Next khi tạo mới */}
         {mode === 'create' && (
-          <button className="primary" onClick={handleSaveAndContinue}>
-            Save & continue
+          <button className="btn-primary" onClick={handleSaveAndContinue}>
+            Save & Continue
           </button>
         )}
       </div>
-    </>
+    </div>
   );
 }

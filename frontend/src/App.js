@@ -12,19 +12,28 @@ import UserManagement from './pages/admin/UserManagement';
 import EmployeeProfile from './pages/admin/EmployeeProfile/EmployeeProfile';
 import { NotificationProvider } from './context/NotificationContext';
 import ProjectManagement from './pages/admin/ProjectManagement';
+import AddProjectWizard from '../src/pages/admin/projects/AddProjectWizard/AddProjectWizard';
+import TicketPage from './pages/staff/tickets/TicketPage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ITServiceManagement from './pages/admin/ITServiceManagement';
+
 
 function App() {
   return (
     <AuthProvider>
       <NotificationProvider>
         <BrowserRouter>
+          {/* Toast global */}
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            pauseOnHover
+          />
           <Routes>
-            {/* <Route path="/login" element={<LoginFooter> <Login /> </LoginFooter> } />
-   
-          <Route path="/register" element={<LoginFooter> <Register /> </LoginFooter> } />
-
-          <Route path="/forget-password" element={<LoginFooter> <ForgetPassword /> </LoginFooter> } /> */}
-
             {/* Admin : quản lý người dùng */}
             <Route
               path="/admin/users"
@@ -36,6 +45,19 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            {/* quản lý tickets */}
+            <Route
+              path="/admin/tickets"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <TicketPage />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+
 
             {/* quản lý project - tasks */}
             <Route
@@ -49,6 +71,39 @@ function App() {
               }
             />
 
+            {/* quản lý it services */}
+            <Route
+              path="/admin/itservices"
+              element={
+                <ProtectedRoute roles={['ADMIN']}>
+                  <MainLayout>
+                    <ITServiceManagement />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/projects/new"
+              element={
+                <ProtectedRoute roles={['ADMIN']}>
+                  <MainLayout>
+                    <AddProjectWizard />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/projects/:id/edit"
+              element={
+                <ProtectedRoute roles={['ADMIN']}>
+                  <MainLayout>
+                    <AddProjectWizard />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
 
             {/* Đổi mật khẩu */}
             <Route path="/profile" element={<ProtectedRoute><MainLayout><div>Profile page</div></MainLayout></ProtectedRoute>} />
@@ -112,6 +167,19 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            {/* staff */}
+            <Route
+              path="/tickets"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <TicketPage />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+
           </Routes>
         </BrowserRouter>
       </NotificationProvider>
@@ -120,3 +188,12 @@ function App() {
 }
 
 export default App;
+
+
+
+
+//  <Route path="/login" element={<LoginFooter> <Login /> </LoginFooter> } />
+   
+//           <Route path="/register" element={<LoginFooter> <Register /> </LoginFooter> } />
+
+//           <Route path="/forget-password" element={<LoginFooter> <ForgetPassword /> </LoginFooter> } />

@@ -1,8 +1,10 @@
 .sidebar {
-  width: 155px !important;
+  width: 200px;
+  flex-shrink: 0;              /* ⭐ KHÓA SIDEBAR */
   background: #1f2937;
-  color: grey;
+  color: #9ca3af;
   padding: 16px;
+  box-sizing: border-box;
 }
 
 .sidebar-title {
@@ -13,25 +15,24 @@
   color: #e5e7eb;
 }
 
+/* Menu */
 .menu {
   list-style: none;
   padding: 0;
-    font-weight: 400;
-}
-
-.menu-item {
-  display: block;
-  padding: 10px 12px;
-  margin-bottom: 6px;
-  border-radius: 4px;
-  color: #d1d5db;
-  text-decoration: none;
+  margin: 0;
+  font-weight: 400;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  color: #d1d5db;
+  text-decoration: none;
+  transition: background 0.15s ease;
 }
 
 .menu-item svg {
@@ -39,14 +40,12 @@
   color: inherit;
 }
 
-
 .menu-item:hover {
   background: #374151;
   color: #fff;
 }
 
 .menu-item.active {
-  background: #7a7d8186;
+  background: #4b5563;
   color: #fff;
-  font-weight: 400;
 }

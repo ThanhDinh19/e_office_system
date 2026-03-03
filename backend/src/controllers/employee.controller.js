@@ -12,7 +12,7 @@ const getAllEmployees = async (req, res, next) => {
   try {
     const employees = await Employee.findAll();
     res.json(employees);
-  } catch (error) { 
+  } catch (error) {
     next(error); // đẩy lỗi về global error handler
   }
 };
@@ -505,13 +505,13 @@ const getSocialLinks = async (req, res) => {
 };
 
 
-const updateEmployeeContract = async (req, res) => {``
+const updateEmployeeContract = async (req, res) => {
   const t = await sequelize.transaction();
 
   try {
     const { id } = req.params; // employee_id
 
-    
+
     const employeeData = mapEmployeeInfoData(req.body);
     const employee = await Employee.findByPk(id, { transaction: t });
 
@@ -523,7 +523,7 @@ const updateEmployeeContract = async (req, res) => {``
     await employee.update(employeeData, { transaction: t });
 
     const contractData = mapEmployeeContractData(req.body, id);
-  
+
     const contract = await EmployeeContract.findOne({
       where: { employee_id: id },
       order: [['created_at', 'DESC']], // nếu có nhiều hợp đồng
@@ -553,63 +553,7 @@ const updateEmployeeContract = async (req, res) => {``
 };
 
 
-/* ================= EMPLOYEE ================= */
-    // const employeeData = {
-    //   full_name: req.body.full_name,
-    //   cccd: req.body.cccd,
-    //   cccd_issue_date: req.body.cccd_issue_date || null,
-    //   cccd_issue_place: req.body.cccd_issue_place || null,
 
-    //   labor_book_number: req.body.labor_book_number || null,
-    //   labor_book_issue_date: req.body.labor_book_issue_date || null,
-    //   labor_book_issue_place: req.body.labor_book_issue_place || null,
-
-    //   profession: req.body.profession || null,
-
-    //   email: req.body.email,
-    //   phone: req.body.phone,
-    //   address: req.body.address,
-    //   permanent_address: req.body.permanent_address,
-
-    //   place_of_birth: req.body.place_of_birth,
-    //   nationality: req.body.nationality,
-
-    //   dob: req.body.dob || null,
-    //   gender: req.body.gender,
-
-    //   department_id: req.body.department_id || null,
-    //   position_id: req.body.position_id || null,
-
-    //   contract_type: req.body.contract_type,
-    //   job_title: req.body.job_title,
-    //   join_date: req.body.join_date || null,
-    // };
-
-
-     /* ================= CONTRACT ================= */
-    // const contractData = {
-    //   start_date: req.body.hireDate,
-    //   end_date: req.body.endDate || null,
-
-    //   contract_type: req.body.contract_type,
-    //   contract_number: req.body.contract_number || null,
-
-    //   probation_from: req.body.probation_from || null,
-    //   probation_to: req.body.probation_to || null,
-
-    //   duration_months: req.body.duration_months || null,
-
-    //   workplace: req.body.workplace || null,
-    //   job_title: req.body.job_title || null,
-    //   job_description: req.body.job_description || null,
-
-    //   salary: req.body.salary,
-    //   salary_grade: req.body.salary_grade || null,
-    //   salary_level: req.body.salary_level || null,
-
-    //   sign_date: req.body.sign_date || null,
-    //   status: req.body.contract_status || 'DRAFT',
-    // };
 
 
 
