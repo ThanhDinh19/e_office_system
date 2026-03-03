@@ -1,0 +1,75 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-ticket{  
+  background: #fff;
+  width: 700px;
+  border-radius: 5px;
+  padding: 16px;
+}
+
+.modal-header-ticket{
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  border-radius: 10px;  
+  color: #000;
+}
+
+.modal-header-ticket button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.btn-primary {
+  background: #00a991;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #eee;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+}
+
+.btn-close{
+  background-color: transparent;
+  border: none;
+  color: white
+}

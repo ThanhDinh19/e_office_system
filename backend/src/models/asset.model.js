@@ -25,7 +25,7 @@ const Asset = sequelize.define(
       defaultValue: 'stock',
     },
   },
-  {
+  { 
     tableName: 'assets',
     timestamps: false,
   }

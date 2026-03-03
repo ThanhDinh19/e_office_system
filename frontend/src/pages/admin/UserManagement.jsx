@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 import { getUsers, deactivateUser } from '../../services/adminUser.service';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import './UserManagement.css';
-import AddEmployeeWizard from '../employees/AddEmployeeWizard';
+import AddEmployeeWizard from '../../components/common/AddEmployeeWizard';
 import { Link } from 'react-router-dom';
 
 export default function UserManagement() {

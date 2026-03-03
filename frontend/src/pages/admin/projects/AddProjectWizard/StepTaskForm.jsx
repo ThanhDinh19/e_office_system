@@ -9,10 +9,10 @@ import './StepTaskForm.css';
 export default function StepTaskForm({ projectId, onClose, onSuccess }) {
   const [members, setMembers] = useState([]);
   const [globalAssignedIds, setGlobalAssignedIds] = useState([]); // Tất cả members đã được assign
-  
+
   // Danh sách các group đã tạo
   const [groupList, setGroupList] = useState([]);
-  
+
   // Group hiện tại đang tạo
   const [currentGroup, setCurrentGroup] = useState({
     name: '',
@@ -112,7 +112,7 @@ export default function StepTaskForm({ projectId, onClose, onSuccess }) {
     const newAssignedIds = currentGroup.tasks
       .map((t) => Number(t.assignee_id))
       .filter(Boolean);
-    
+
     setGlobalAssignedIds([...globalAssignedIds, ...newAssignedIds]);
 
     // Reset form cho group mới
@@ -134,12 +134,12 @@ export default function StepTaskForm({ projectId, onClose, onSuccess }) {
   // Xóa một group đã tạo
   const handleRemoveGroup = (index) => {
     const removedGroup = groupList[index];
-    
+
     // Trả lại members về available
     const removedAssignedIds = removedGroup.tasks
       .map((t) => Number(t.assignee_id))
       .filter(Boolean);
-    
+
     setGlobalAssignedIds(
       globalAssignedIds.filter((id) => !removedAssignedIds.includes(id))
     );
@@ -225,8 +225,8 @@ export default function StepTaskForm({ projectId, onClose, onSuccess }) {
         <>
           <div className="current-group-section">
             <h4>
-              {groupList.length === 0 
-                ? 'Create First Group' 
+              {groupList.length === 0
+                ? 'Create First Group'
                 : `Create New Group (${groupList.length + 1})`}
             </h4>
 
@@ -368,33 +368,33 @@ export default function StepTaskForm({ projectId, onClose, onSuccess }) {
               ✓ Save This Group & Create Next Group
             </button>
           </div>
-        </>
+        </> 
       )}
 
       {/* THÔNG BÁO HẾT MEMBERS */}
       {!canAddMoreGroups && (
         <div className="hint-text success">
-          ✅ All members have been assigned to groups!
+          All members have been assigned to groups!
         </div>
       )}
 
       {/* ACTIONS */}
       <div className="modal-actions">
-        <button onClick={onClose}>Cancel</button>
+        <button className="btn-secondary" onClick={onClose}>Cancel</button>
         <button
-          className="primary"
+          className="btn-primary" // Class xanh đậm nổi bật
           onClick={handleFinalSave}
           disabled={groupList.length === 0}
         >
-          💾 Save All Groups ({groupList.length})
+          Save All & Finish
         </button>
       </div>
 
       {/* THỐNG KÊ */}
       <div className="stats-bar">
-        <span>👥 Available: {availableMembers.length}</span>
-        <span>✅ Assigned: {globalAssignedIds.length}</span>
-        <span>📁 Groups: {groupList.length}</span>
+        <span>Available: {availableMembers.length}</span>
+        <span>Assigned: {globalAssignedIds.length}</span>
+        <span>Groups: {groupList.length}</span>
       </div>
     </div>
   );

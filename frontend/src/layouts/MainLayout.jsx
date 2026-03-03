@@ -2,6 +2,8 @@ import Sidebar from '../components/sidebar/Sidebar';
 import Navbar from '../components/navbar/Navbar';
 import './MainLayout.css';
 
+
+
 export default function MainLayout({ children }) {
   return (
     <div className="main-layout">

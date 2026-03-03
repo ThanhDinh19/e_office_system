@@ -3,6 +3,8 @@ import './ProjectManagement.css';
 import AddProjectWizard from './projects/AddProjectWizard/AddProjectWizard';
 import { getProjects, deleteProject } from '../../services/project.service';
 import { Trash2, Edit } from 'lucide-react';
+import { Outlet, useNavigate } from 'react-router-dom';
+
 
 
 export default function ProjectManagement() {
@@ -13,6 +15,7 @@ export default function ProjectManagement() {
     const [editingProject, setEditingProject] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 8;
+    const navigate = useNavigate();
 
     const fetchProjects = async () => {
         const data = await getProjects();
@@ -87,11 +90,10 @@ export default function ProjectManagement() {
                             </svg>
                             Import projects
                         </button>
-                        <button className="pm-btn pm-btn-primary" onClick={() => setOpenAddProject(true)}>
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
-                                <path d="M8 5v6M5 8h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                            </svg>
+                        <button
+                            className="pm-btn pm-btn-primary"
+                            onClick={() => navigate('/admin/projects/new')}
+                        >
                             Add project
                         </button>
                     </div>
@@ -234,14 +236,10 @@ export default function ProjectManagement() {
 
                                             <button
                                                 className="pm-action-btn pm-action-edit"
-                                                onClick={() => {
-                                                    setEditingProject(project);
-                                                    setOpenAddProject(true);
-                                                }}
+                                                onClick={() => navigate(`/admin/projects/${project.id}/edit`)}
                                             >
                                                 <Edit size={16} />
                                             </button>
-
                                             <button
                                                 className="pm-action-btn pm-action-delete"
                                                 onClick={() => handleDeleteProject(project.id)}
@@ -290,19 +288,8 @@ export default function ProjectManagement() {
                 </div>
             </div>
 
-            <AddProjectWizard
-                open={openAddProject}
-                project={editingProject}
-                onClose={() => {
-                    setOpenAddProject(false);
-                    setEditingProject(null);
-                }}
-                onSuccess={() => {
-                    setOpenAddProject(false);
-                    setEditingProject(null);
-                    fetchProjects();
-                }}
-            />
+            {/* MODAL ROUTE */}
+            <Outlet />
         </>
     );
 }

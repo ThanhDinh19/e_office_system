@@ -29,7 +29,116 @@ const AssetMaintenance = require('./asset-maintenance.model');
 const SocialLink = require('./social-link.model');
 const CompanyInfo = require('./companyInfo.model');
 const Authorization = require('./authorization.model');
+const TicketPriority = require('./ticket-priority.model');
+const TicketAssignment = require('./ticket-assignment.model');
+const EmployeeItLevel = require('./employee-it-level.model');
+const ItSupportLevel = require('./it-support-level.model');
+const ItService = require('./it-service.model');
+const ServiceSlaRule = require('./service-sla-rule.model');
+const TicketAttachment = require('./ticket-attachment.model');
 /* ========== Associations ========== */
+
+
+TicketAttachment.belongsTo(Ticket, {
+  foreignKey: 'ticket_id',
+  as: 'ticket',
+});
+
+Ticket.hasMany(TicketAttachment, {
+  foreignKey: 'ticket_id',
+  as: 'attachments',
+});
+
+
+// Ticket ↔ Priority
+Ticket.belongsTo(TicketPriority, {
+  foreignKey: 'priority_id',
+  as: 'priority',
+});
+
+TicketPriority.hasMany(Ticket, {
+  foreignKey: 'priority_id',
+  as: 'tickets',
+});
+
+// Ticket ↔ IT Service
+Ticket.belongsTo(ItService, {
+  foreignKey: 'service_id',
+  as: 'service',
+});
+
+ItService.hasMany(Ticket, {
+  foreignKey: 'service_id',
+  as: 'tickets',
+});
+
+// Ticket ↔ TicketAssignmen
+Ticket.hasMany(TicketAssignment, {
+  foreignKey: 'ticket_id',
+  as: 'assignments',
+});
+
+TicketAssignment.belongsTo(Ticket, {
+  foreignKey: 'ticket_id',
+  as: 'ticket',
+});
+
+// TicketAssignment ↔ Employee
+TicketAssignment.belongsTo(Employee, {
+  foreignKey: 'support_id',
+  as: 'support',
+});
+
+Employee.hasMany(TicketAssignment, {
+  foreignKey: 'support_id',
+  as: 'assignments',
+});
+
+// Employee <=> EmployeeItLevel
+Employee.hasMany(EmployeeItLevel, {
+  foreignKey: 'employee_id',
+  as: 'itLevels',
+});
+
+EmployeeItLevel.belongsTo(Employee, {
+  foreignKey: 'employee_id',
+  as: 'employee',
+});
+
+// EmployeeItLevel ↔ ItSupportLevel
+EmployeeItLevel.belongsTo(ItSupportLevel, {
+  foreignKey: 'level_id',
+  as: 'supportLevel',
+});
+
+ItSupportLevel.hasMany(EmployeeItLevel, {
+  foreignKey: 'level_id',
+  as: 'employees',
+});
+
+
+// Service SLA Rule
+ServiceSlaRule.belongsTo(ItService, {
+  foreignKey: 'service_id',
+  as: 'service',
+});
+
+ServiceSlaRule.belongsTo(TicketPriority, {
+  foreignKey: 'priority_id',
+  as: 'priority',
+});
+
+ItService.hasMany(ServiceSlaRule, {
+  foreignKey: 'service_id',
+  as: 'slaRules',
+});
+
+TicketPriority.hasMany(ServiceSlaRule, {
+  foreignKey: 'priority_id',
+  as: 'slaRules',
+});
+
+
 
 // Employee - User (1 - 1)
 Employee.hasOne(User, { foreignKey: 'employee_id' });
@@ -207,4 +316,9 @@ module.exports = {
   SocialLink,
   CompanyInfo,
   Authorization,
+  TicketPriority,
+  TicketAssignment,
+  ItService,
+  ServiceSlaRule,
+  TicketAttachment,
 };

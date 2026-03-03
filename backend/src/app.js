@@ -21,6 +21,9 @@ app.use('/api', routes);
 
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
+app.use('/ticket_attachments', express.static('public/ticket_attachments'));
+
+
 /* ========== HEALTH CHECK ========== */
 
 app.get('/health', (req, res) => {

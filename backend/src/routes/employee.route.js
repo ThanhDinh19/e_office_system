@@ -29,6 +29,7 @@ router.post(
   employeeController.uploadAvatar
 );
 
+
 router.put(
     '/:id/job-info',
     authenticate,

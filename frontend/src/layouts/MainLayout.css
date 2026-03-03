@@ -1,17 +1,17 @@
-/* ===== Layout ===== */
+/* ===== Layout Root ===== */
 .main-layout {
   display: flex;
   height: 100vh;
-  overflow: hidden;
   background: #f3f4f6;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ===== Menu ===== */
-.menu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* ===== Right Side ===== */
+.content-wrapper {
+  flex: 1;                  /* ⭐ BẮT BUỘC */
+  min-width: 0;             /* ⭐ CHỐNG TRÀN FLEX */
+  display: flex;
+  flex-direction: column;
 }
 
 /* ===== Main Content ===== */
@@ -19,6 +19,7 @@
   flex: 1;
   padding: 24px;
   overflow-y: auto;
+  overflow-x: hidden;       /* ⭐ CHỐNG SCROLL NGANG */
   background: #f3f4f6;
 }
 
